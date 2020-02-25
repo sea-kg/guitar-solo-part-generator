@@ -5,10 +5,12 @@
     <link rel="stylesheet" href="css/bootstrap-4.4.1.min.css"/>
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/bootstrap-4.4.1.min.js"></script>
+    <script src="js/createWaves.js"></script>
     <script src="js/index.js"></script>
 </head>
 <body class="container-fluid">
     <h1>Solo Guitar Generator</h1>
+    
     <div id="filters">
         <!-- h3>Filters:</h3>
         Use a 
@@ -43,6 +45,12 @@
     <input type="button" onclick="generate()" value="Generate">
     <h3>Tabulatur</h3>
     <pre id="tabulatur"></pre>
+    Instrument for play <select id="use_instrument">
+      <option value='guitar'>guitar</option>
+      <option value='piano'>piano</option>
+      <option value='bass'>bass</option>
+      <option value='trombone'>trombone</option>
+    </select>
     <input type="button" onclick="play()" value="Play">
     <input type="button" onclick="stop()" value="Stop">
 </body>

@@ -28,61 +28,172 @@ var getFrequencyOfNote = function (note) {
 };
 var nodes = [];
 function stopAllNodes() {
-    for (var i = 0; i < nodes.length; i++) {
-        nodes[i].stop(0);
-        nodes[i].disconnect();
-    }
-    nodes = []
+    
 }
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
-var context = new AudioContext()
+window.ac = new AudioContext()
+window.waves = createWaves(ac);
 
-function addNote(note) {
-    masterGain = context.createGain();
-    masterGain.gain.value = 0.5;
-    masterGain.connect(context.destination); 
+// The setup includes tail part, which is common for all nodes
+// And head - set of nodes added for each note
+// It looks like this:
+//
+// ------------- HEAD ---------------- | --------- TAIL --------------------
+//                                     |
+// [ |Oscillator|->|Biquad|->|Gain|-> ][ |Gain|->|Dynamics  |->|Destination| ]
+//   |Periodic  |  |Filter|  |ADSR|              |Compressor|
+//   |Wave      |
+//
+// The first oscillator can be doubled by another one to play
+// at note frequency + timbre detune (if detune is set for the timbre)
+//
+// So we crate an oscillator (or two) + filter + ADSR gain to play each note.
+// This way we create a lot of audio nodes.
+// Musicial.js handles this by creating a queue of notes and passed only a limited set of notes to web audio API.
+//
+
+function addNote(_note, _time, _duration, _cleanuptime) {
+    var note = {};
+    note["time"] = _time;
+    note["frequency"] = getFrequencyOfNote(_note);
+    note["duration"] = _duration;
+    note["velocity"] = 0.4;
+    note["cleanuptime"] = _cleanuptime;
+
+    var timbre = wave.defs;
+    var startTime = note.time;
+    var releaseTime = startTime + note.duration;
+    var attackTime = Math.min(releaseTime, startTime + timbre.attack);
+    var decayTime = timbre.decay *
+          Math.pow(440 / note.frequency, timbre.decayfollow);
+    var decayStartTime = attackTime;
+    var stopTime = releaseTime + timbre.release;
+    var doubled = timbre.detune && timbre.detune != 1.0;
+    var amp = timbre.gain * note.velocity * (doubled ? 0.5 : 1.0);
+
+    var masterGain = ac.createGain();
+    masterGain.connect(out);
+    masterGain.gain.setValueAtTime(0, startTime);
+    // ATTACK
+    masterGain.gain.linearRampToValueAtTime(amp, attackTime);
+    // DECAY
+    //   For the beginning of the decay, use linearRampToValue instead
+    //   of setTargetAtTime, because it avoids http://crbug.com/254942.
+    while (decayStartTime < attackTime + 1/32 &&
+           decayStartTime + 1/256 < releaseTime) {
+      // Just trace out the curve in increments of 1/256 sec
+      // for up to 1/32 seconds.
+      decayStartTime += 1/256;
+      masterGain.gain.linearRampToValueAtTime(
+          amp * (timbre.sustain + (1 - timbre.sustain) *
+              Math.exp((attackTime - decayStartTime) / decayTime)),
+          decayStartTime);
+    }
+    // SUSTAIN
+    //   For the rest of the decay, use setTargetAtTime.
+    masterGain.gain.setTargetAtTime(amp * timbre.sustain,
+        decayStartTime, decayTime);
+    // RELEASE
+    //   Then at release time, mark the value and ramp to zero.
+    masterGain.gain.setValueAtTime(amp * (timbre.sustain + (1 - timbre.sustain) *
+        Math.exp((attackTime - releaseTime) / decayTime)), releaseTime);
+    masterGain.gain.linearRampToValueAtTime(0, stopTime);
+
+    //var f = g;
+    var filter = ac.createBiquadFilter();
+    filter.frequency.value =
+        wave.defs.cutoff + note.frequency * wave.defs.cutfollow;
+        filter.Q.value = wave.defs.resonance;
+        filter.connect(masterGain);
+    nodes.push(filter)
+    nodes.push(masterGain)
+
+    var osc = ac.createOscillator();
+    // Configure periodic wave
+    osc.frequency.value = note.frequency;
+    var pwave = wave.wave;
+    // Check the note frequency and if it is greater than wave frequency
+    // then switch to another wave for higher frequency
+    // Waves for different frequences are pre-created in createWaves()
+    if (wave.freq) {
+      var bwf = 0;
+      // Look for a higher-frequency variant.
+      for (var k in wave.freq) {
+        wf = Number(k);
+        if (note.frequency > wf && wf > bwf) {
+          bwf = wf;
+          pwave = wave.freq[bwf];
+        }
+      }
+    }
+    osc.setPeriodicWave(pwave);
+    osc.connect(filter);
+    osc.start(startTime);
+    osc.stop(stopTime);
+    osc.onended = function() { 
+        console.log(_note);
+    };
+    nodes.push(osc);
+
+    if (doubled) {
+      var o2 = ac.createOscillator();
+      o2.frequency.value = note.frequency * timbre.detune;
+      o2.setPeriodicWave(wave.wave);
+      o2.connect(filter);
+      o2.start(startTime);
+      o2.stop(stopTime);
+      nodes.push(o2);
+    }
+    startTime += note.duration*1;
     
-    var oscillator = context.createOscillator();
-    oscillator.type = 'sawtooth'; // 'square';
-    oscillator.frequency.value = getFrequencyOfNote(note);
+
+    // masterGain = ac.createGain();
+    // masterGain.gain.value = 0.5;
+    // masterGain.connect(ac.destination); 
+    
+    /*var oscillator = ac.createOscillator();
+    // oscillator.type = 'sawtooth'; // 'square';
+    oscillator.type = 'sine';
+    oscillator.frequency.value = getFrequencyOfNote(_note);
     oscillator.connect(masterGain);
     oscillator.start(0);
-    nodes.push(oscillator);
+    nodes.push(oscillator);*/
 }
 
-var interval = null;
-function play() {
-    var i = 0;
-    addNote(window.soloData[0].note);
-    interval = setInterval(function() {
-        stopAllNodes();
-        i++;
-        if (i < window.soloData.length) {
-            addNote(window.soloData[i].note);
-        } else {
-            clearInterval(interval);
-        }
-    }, 200);
-        // keyboard = new QwertyHancock(settings);        
-}
 function stop() {
-    clearInterval(interval);
-    stopAllNodes();
+    for (var i = 0; i < nodes.length; i++) {
+        // nodes[i].stop(0);
+        nodes[i].disconnect();
+    }
+    nodes = []
+    window.ac.close();
 }
-/*
-Частоты открытых струн:
-6-я 82,4 Гц    getFrequencyOfNote("E2");
-5-я 110 Гц     getFrequencyOfNote("A2");
-4-я 146,8 Гц   getFrequencyOfNote("D3");
-3-я 195,99 Гц  getFrequencyOfNote("G3");
-2-я 246,9 Гц   getFrequencyOfNote("B3");
-1-я 329,6 Гц   getFrequencyOfNote("E4");
-*/
+
+function play() {
+    stop();
+
+    window.ac = new AudioContext()
+    window.wave = waves['piano'];
+    var dcn = ac.createDynamicsCompressor();
+    dcn.ratio = 16;
+    dcn.attack = 0.0005;
+    dcn.connect(ac.destination);
+    window.out = ac.createGain();
+    window.out.connect(dcn);
+
+    var intrument = $('#use_instrument').val();
+    window.wave = waves[intrument];
+    var i = 0;
+
+    console.log(window.soloData);
+    for (var i = 0; i < window.soloData.length; i++) {
+        addNote(window.soloData[i].note, i*0.3, 0.2, i*0.3);
+    }  
+}
 
 function generate() {
     stop();
-
     $.ajax({
         url: "/api/v1/solo-generate",
         method: "GET"
