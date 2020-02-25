@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  guitar_solo_part_generator_service:
+    build: .
+    image: sea5kg/guitar-solo-part-generator:local
+    environment:
+      - GSPG_PORT=1234 # default port 1234
+      - GSPG_WEB=/home/user0/web # default web folder
+    expose:
+      - "1234"
+    ports:
+      - "1234:1234"
+    restart: always
+    networks:
+      - guitar_solo_part_generator_net
+
+networks:
+  guitar_solo_part_generator_net:
+    driver: bridge

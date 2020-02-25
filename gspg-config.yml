@@ -1,0 +1,35 @@
+server-port: 1234
+web-folder: "./web"
+# allow three fingers for solo (for begginer)
+## index finger
+## middle finger
+## ring finger
+## little finger
+
+finger-rules:
+  # moving by one string
+  - "{X string, Y fret, no finger} move to {X string, Y fret, index finger}"
+  - "{X string, Y fret, no finger} move to {X string, Y fret, middle finger}"
+  - "{X string, Y fret, no finger} move to {X string, Y fret, ring finger}"
+  - "{X string, Y fret, no finger} move to {X string, Y fret, little finger}"
+
+  # moving by one string forward
+  - "{X string, Y fret, index finger} move to {X string, Y+1 fret, index finger}"
+  - "{X string, Y fret, index finger} move to {X string, Y+1 fret, middle finger}"
+  - "{X string, Y fret, index finger} move to {X string, Y+2 fret, ring finger}"
+  - "{X string, Y fret, index finger} move to {X string, Y+3 fret, ring finger}"
+  - "{X string, Y fret, index finger} move to {X string, Y+3 fret, little finger}"
+  - "{X string, Y fret, index finger} move to {X string, Y+4 fret, little finger}"
+
+  # moving by one string backward
+  - "{X string, Y fret, middle finger} move to {X string, Y-1 fret, middle finger}"
+  - "{X string, Y fret, middle finger} move to {X string, Y-2 fret, middle finger}"
+  # - {X string, Y fret, middle finger} move to {X string, Y-1 fret, index finger}
+  # - {X string, Y fret, ring finger} move to {X string, Y-1 fret, middle finger}
+  # - {X string, Y fret, ring finger} move to {X string, Y-2 fret, index finger}
+
+  - "{X string, Y fret, index finger} move to {X+2 string, 0 fret, no finger}"
+
+  - "{X string, Y fret, index finger} move to {X+1 string, Y+2 fret, middle finger}"
+  - "{X string, Y fret, index finger} move to {X+2 string, Y+2 fret, ring finger}"
+  - "{X string, Y fret, index finger} move to {X+3 string, Y+2 fret, little finger}"

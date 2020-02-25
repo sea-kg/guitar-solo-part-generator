@@ -1,3 +1,13 @@
+tmp/*
+guitar-solo-part-generator
+.logs/*
+.DS_Store
+.vscode/*
+wsjcpp.local.yml
+
+# MacOS
+.DS_Store
+
 # Prerequisites
 *.d
 

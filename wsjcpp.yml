@@ -1,0 +1,76 @@
+name: "guitar-solo-part-generator"
+main-cmakelists:
+  auto-genearted: true
+  last-sha1: ""
+version: "v0.0.1"
+cmake_minimum_required: "3.0"
+cmake_cxx_standard: "11"
+description: "1"
+
+authors:
+  - name: "1"
+    email: "1"
+
+origins:
+  - address: "https://sea-kg.com/wsjcpp-package-registry/"
+    type: "package-registry"
+
+keywords:
+  - "c++"
+
+distribution:
+  - source-file: "src/solo_part_guitar.cpp"
+    target-file: "solo_part_guitar.cpp"
+    type: "source-code"
+  - source-file: "src/solo_part_guitar.h"
+    target-file: "solo_part_guitar.h"
+    type: "source-code"
+  - source-file: "src/position_note_guitar.h"
+    target-file: "position_note_guitar.h"
+    type: "source-code"
+  - source-file: "src/position_note_guitar.cpp"
+    target-file: "position_note_guitar.cpp"
+    type: "source-code"
+  - source-file: "src/solo_part_guitar_rule.h"
+    target-file: "solo_part_guitar_rule.h"
+    type: "source-code"
+  - source-file: "src/solo_part_guitar_rule.cpp"
+    target-file: "solo_part_guitar_rule.cpp"
+    type: "source-code"
+  - source-file: "src/solo_part_guitar_rules.cpp"
+    target-file: "solo_part_guitar_rules.cpp"
+    type: "source-code"
+  - source-file: "src/solo_part_guitar_rules.h"
+    target-file: "solo_part_guitar_rules.h"
+    type: "source-code"
+
+dependencies:
+  - name: "wsjcpp-core"
+    version: "v0.0.5"
+    url: "https://github.com/wsjcpp/wsjcpp-core:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_core"
+  - name: "nlohmann/json"
+    version: "v3.7.3"
+    url: "https://github.com/wsjcpp/json:develop"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/nlohmann_json"
+  - name: "wsjcpp-validators"
+    version: "v0.0.3"
+    url: "https://github.com/wsjcpp/wsjcpp-validators:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_validators"
+  - name: "wsjcpp-light-web-server"
+    version: "v0.0.1"
+    url: "https://github.com/wsjcpp/wsjcpp-light-web-server:master"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/wsjcpp_light_web_server"
+
+unit-tests:
+  cases:
+    - name: "PositionNoteGuitar"
+      description: "PositionNoteGuitar"
+    - name: "ParseRule"
+      description: "Rule Parser"
+    - name: "NoteGuitarConverter"
+      description: "test convertor"
