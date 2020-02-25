@@ -52,7 +52,7 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
     WSJCppLog::info(TAG, "start note: " + note.toPrintableString());
     SoloPartGuitar part;
     part.addNote(note);
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 16; i++) {
         std::vector<PositionNoteGuitar> vNotes = m_rules.findWithBegin(note);
         std::cout << "Found possible note " << vNotes.size() << std::endl;
         if (vNotes.size() == 0) { // TODO come to no finger

@@ -42,6 +42,8 @@ std::string SoloPartGuitar::exportTabulatur() {
     std::string sRet = "";
     std::string stringNames[] = {"", "E4", "B3", "G3", "D3", "A2", "E2"};
 
+    
+    
     for (int iString = 1; iString <= 6; iString++) {
         sRet += std::to_string(iString) + "|" + stringNames[iString] + "|-";
         for (int x = 0; x < m_vNotes.size(); x++) {
@@ -56,6 +58,28 @@ std::string SoloPartGuitar::exportTabulatur() {
         }
         sRet += "\n";
     }
+    sRet += "HAND|-";
+    for (int x = 0; x < m_vNotes.size(); x++) {
+        PositionNoteGuitar note = m_vNotes[x];
+        GuitarTouchFinger nFinger = note.getFinger();
+        if (nFinger == GuitarTouchFinger::GUITAR_NO_FINGER) {
+            sRet += "--N";
+        } else if (nFinger == GuitarTouchFinger::GUITAR_INDEX_FINGER) {
+            sRet += "--I";
+        } else if (nFinger == GuitarTouchFinger::GUITAR_MIDDLE_FINGER) {
+            sRet += "--M";
+        } else if (nFinger == GuitarTouchFinger::GUITAR_RING_FINGER) {
+            sRet += "--R";
+        } else if (nFinger == GuitarTouchFinger::GUITAR_LITTLE_FINGER) {
+            sRet += "--L";
+        }        
+    }
+    sRet += "\n";
+    sRet += "N - No finger / empty string\n";
+    sRet += "I - Index finger\n";
+    sRet += "M - Middle finger\n";
+    sRet += "R - Ring finger\n";
+    sRet += "L - Little finger\n";
     return sRet;
 }
 
