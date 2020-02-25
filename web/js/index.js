@@ -54,9 +54,10 @@ window.waves = createWaves(ac);
 //
 
 function addNote(_note, _time, _duration, _cleanuptime) {
+    console.log(_note)
     var note = {};
     note["time"] = _time;
-    note["frequency"] = getFrequencyOfNote(_note);
+    note["frequency"] = getFrequencyOfNote(_note.note);
     note["duration"] = _duration;
     note["velocity"] = 0.4;
     note["cleanuptime"] = _cleanuptime;
@@ -133,37 +134,28 @@ function addNote(_note, _time, _duration, _cleanuptime) {
     osc.stop(stopTime);
     osc.onended = function() { 
         console.log(_note);
+        $('#currentnote').html(_note.note);
     };
     nodes.push(osc);
 
     if (doubled) {
-      var o2 = ac.createOscillator();
-      o2.frequency.value = note.frequency * timbre.detune;
-      o2.setPeriodicWave(wave.wave);
-      o2.connect(filter);
-      o2.start(startTime);
-      o2.stop(stopTime);
-      nodes.push(o2);
+        var o2 = ac.createOscillator();
+        o2.frequency.value = note.frequency * timbre.detune;
+        o2.setPeriodicWave(wave.wave);
+        o2.connect(filter);
+        o2.start(startTime);
+        o2.stop(stopTime);
+        o2.onended = function() { 
+            console.log("o2", _note);
+            // $('#currentnote').html(_note.note);
+        };
+        nodes.push(o2);
     }
     startTime += note.duration*1;
-    
-
-    // masterGain = ac.createGain();
-    // masterGain.gain.value = 0.5;
-    // masterGain.connect(ac.destination); 
-    
-    /*var oscillator = ac.createOscillator();
-    // oscillator.type = 'sawtooth'; // 'square';
-    oscillator.type = 'sine';
-    oscillator.frequency.value = getFrequencyOfNote(_note);
-    oscillator.connect(masterGain);
-    oscillator.start(0);
-    nodes.push(oscillator);*/
 }
 
 function stop() {
     for (var i = 0; i < nodes.length; i++) {
-        // nodes[i].stop(0);
         nodes[i].disconnect();
     }
     nodes = []
@@ -184,11 +176,8 @@ function play() {
 
     var intrument = $('#use_instrument').val();
     window.wave = waves[intrument];
-    var i = 0;
-
-    console.log(window.soloData);
     for (var i = 0; i < window.soloData.length; i++) {
-        addNote(window.soloData[i].note, i*0.3, 0.2, i*0.3);
+        addNote(window.soloData[i], i*0.3, 0.25, i*0.3);
     }  
 }
 
@@ -200,6 +189,7 @@ function generate() {
     }).done(function(resp){
         $('#tabulatur').html(resp['tabulatur']);
         window.soloData = resp["part"];
+        console.log(window.soloData)
     }).fail(function(err){
         console.error(err)
     })
