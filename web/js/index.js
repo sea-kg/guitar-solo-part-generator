@@ -1,5 +1,76 @@
 // https://github.com/stuartmemo/qwerty-hancock/blob/master/dist/qwerty-hancock.js
 
+function parsePageParams() {
+	var loc = location.search.slice(1);
+	var arr = loc.split("&");
+	var result = {};
+	var regex = new RegExp("(.*)=([^&#]*)");
+	for(var i = 0; i < arr.length; i++){
+		if(arr[i].trim() != ""){
+			var p = regex.exec(arr[i].trim());
+			console.log("results: " + JSON.stringify(p));
+			if(p == null)
+				result[decodeURIComponent(arr[i].trim().replace(/\+/g, " "))] = '';
+			else
+				result[decodeURIComponent(p[1].replace(/\+/g, " "))] = decodeURIComponent(p[2].replace(/\+/g, " "));
+		}
+	}
+	console.log(JSON.stringify(result));
+	return result;
+}
+
+window.pageParams = parsePageParams();
+
+
+function containsPageParam(name){
+	return (typeof pageParams[name] !== "undefined");
+}
+
+
+function changeLocationState(newPageParams) {
+	var url = '';
+	var params = [];
+	// console.log("changeLocationState");
+	console.log("changeLocationState, newPageParams = ", newPageParams);
+	for(var p in newPageParams){
+		params.push(encodeURIComponent(p) + "=" + encodeURIComponent(newPageParams[p]));
+	}
+	// console.log("changeLocationState", params);
+	// console.log("changeLocationState", window.location.pathname + '?' + params.join("&"));
+	window.history.pushState(newPageParams, document.title, window.location.pathname + '?' + params.join("&"));
+	window.pageParams = parsePageParams();
+}
+changeLocationState(window.pageParams)
+
+window.addEventListener('popstate', function(event) {
+    // The popstate event is fired each time when the current history entry changes.
+
+    // history.back();
+    console.log("popstate");
+    initFilters();
+    window.pageParams = parsePageParams();
+    console.log(window.pageParams);
+
+    // var r = confirm("You pressed a Back button! Are you sure?!");
+
+    // if (r == true) {
+        // Call Back button programmatically as per user confirmation.
+    //    history.back();
+        // Uncomment below line to redirect to the previous page instead.
+        // window.location = document.referrer // Note: IE11 is not supporting this.
+    // } else {
+        // Stay on the current page.
+    //    history.pushState(null, null, window.location.pathname);
+    // }
+
+    // history.pushState(null, null, window.location.pathname);
+
+}, false);
+
+window.onhashchange = function() {
+    console.log("onhashchange");
+}
+
 window.soloData = [];
 
 var notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
@@ -27,9 +98,6 @@ var getFrequencyOfNote = function (note) {
     return 440 * Math.pow(2, (key_number - 49) / 12);
 };
 var nodes = [];
-function stopAllNodes() {
-    
-}
 
 window.AudioContext = window.AudioContext || window.webkitAudioContext;
 window.ac = new AudioContext()
@@ -207,22 +275,38 @@ function generate() {
     })
 }
 
+function changedValueOfList(e) {
+    var name = e.attributes['filter-name'].nodeValue
+    pageParams[name] = e.value
+    changeLocationState(pageParams)
+}
+
 function appendFilterList(_filter) {
-    var el = $('#filters');
     var name = _filter["name"];
+    var pre_val = "";
+    if (containsPageParam(name)) {
+        pre_val = pageParams[name]
+    } else {
+        pre_val = _filter["values"][0]["value"]
+    }
     var _content = ''
         + '<div class="input-group mb-3" id="min_fret_filter_parent">'
         + '  <div class="input-group-prepend">'
         + '    <label class="input-group-text" for="min_fret_filter">' + _filter["caption"] + '</label>'
         + '  </div>'
-        + '  <select class="custom-select gspg-filter" filter-name="' + name + '" id="filter_' + name + '">'
+        + '  <select class="custom-select gspg-filter" filter-name="' + name + '" id="filter_' + name + '" onchange="changedValueOfList(this)">'
     for (var i in _filter["values"]) {
-        _content += '<option value="' + _filter["values"][i]["value"] + '">' + _filter["values"][i]["caption"] + '</option>';
+        var _value = _filter["values"][i]["value"]
+        var _caption = _filter["values"][i]["caption"]
+        _content += '<option value="' + _value + '"' + (pre_val == _value ? 'selected' : '') + '>' + _caption + '</option>';
     }
     _content += ''
         + '  </select>'
         + '</div>';
-    $('#filters').append(_content)
+
+        // onchange="myFunction()"
+    document.getElementById('filters').innerHTML += _content;
+
 }
 
 function applyAllowedFilters(resp) {
@@ -236,14 +320,23 @@ function applyAllowedFilters(resp) {
     }
 }
 
-$(document).ready(function() {
+function initFilters(callback) {
+    document.getElementById('filters').innerHTML = "";
     $.ajax({
         url: "/api/v1/available-filters",
         method: "GET"
     }).done(function(resp){
         applyAllowedFilters(resp);
-        generate();
+        if (callback) {
+            callback()
+        }
     }).fail(function(err){
         console.error(err)
+    })
+}
+
+$(document).ready(function() {
+    initFilters(function() {
+        generate();
     })
 })
