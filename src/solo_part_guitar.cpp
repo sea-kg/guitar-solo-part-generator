@@ -42,8 +42,6 @@ std::string SoloPartGuitar::exportTabulatur() {
     std::string sRet = "";
     std::string stringNames[] = {"", "E4", "B3", "G3", "D3", "A2", "E2"};
 
-    
-    
     for (int iString = 1; iString <= 6; iString++) {
         sRet += std::to_string(iString) + "|" + stringNames[iString] + "|-";
         for (int x = 0; x < m_vNotes.size(); x++) {

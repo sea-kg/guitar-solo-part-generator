@@ -422,8 +422,8 @@ std::string WSJCppCore::createUuid() {
 // ---------------------------------------------------------------------
 
 unsigned long WSJCppCore::convertVoidToULong(void *p) {
-    unsigned long ret = *(unsigned long *)p;
-    return ret;
+    std::uintptr_t ret = reinterpret_cast<std::uintptr_t>(p);
+    return (unsigned long)ret;
 }
 
 // ---------------------------------------------------------------------

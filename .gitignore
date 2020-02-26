@@ -3,6 +3,7 @@ guitar-solo-part-generator
 .logs/*
 .DS_Store
 .vscode/*
+.wsjcpp/*
 wsjcpp.local.yml
 
 # MacOS
