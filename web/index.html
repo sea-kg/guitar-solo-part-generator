@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html xmlns = "http://www.w3.org/1999/xhtml">
+<html xmlns = "http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="css/bootstrap-4.4.1.min.css"/>
     <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/popper-1.14.6-umd.min.js"></script>
     <script src="js/bootstrap-4.4.1.min.js"></script>
+
+
     <script src="js/createWaves.js"></script>
     <script src="js/index.js"></script>
 </head>
-<body class="container-fluid">
+<body class="container">
     <h1>Solo Guitar Generator</h1>
     
     <div id="filters">
@@ -42,17 +46,37 @@
         <select id="first_note"></select -->
         
     </div>
-    <input type="button" onclick="generate()" value="Generate">
-    <h3>Tabulatur</h3>
-    <pre id="tabulatur"></pre>
-    Instrument for play <select id="use_instrument">
-      <option value='guitar'>guitar</option>
-      <option value='piano'>piano</option>
-      <option value='bass'>bass</option>
-      <option value='trombone'>trombone</option>
-    </select>
-    <input type="button" onclick="play()" value="Play">
-    <input type="button" onclick="stop()" value="Stop">
-    <div id="currentnote"></div>
+    <button type="button" onclick="generate()" class="btn btn-dark">Generate</button>
+    <h3></h3>
+    
+    <div class="card">
+      <div class="card-header">
+        Tabulatur
+      </div>
+      <div class="card-body">
+        <pre id="tabulatur"></pre>
+      
+        <form class="form-inline">
+          <div class="form-group mb-2">
+            <input type="text" readonly class="form-control-plaintext" value="Instrument for play">
+          </div>
+          <div class="form-group mb-2">
+            <select id="use_instrument" class="form-control">
+              <option value='guitar'>guitar</option>
+              <option value='piano'>piano</option>
+              <option value='bass'>bass</option>
+              <option value='trombone'>trombone</option>
+            </select>
+          </div>
+          <div class="form-group mx-sm-3 mb-2">
+            <button type="button" onclick="play()" class="btn btn-danger">Play</button>
+          </div>
+          <div class="form-group mx-sm-3 mb-2">
+            <button type="button" onclick="stop()" class="btn btn-dark">Stop</button>
+          </div>
+        </form>
+        <div id="currentnote"></div>
+      </div>
+    </div>
 </body>
 </html>
