@@ -35,7 +35,36 @@ bool HttpHandlerAvailableFilters::handle(const std::string &sWorkerId, WSJCppLig
     }
 
     nlohmann::json jsonResponse;
-    // TODO
+    jsonResponse["result"] = nlohmann::json::array();
+
+    // TODO redesign like a class filters
+    nlohmann::json jsonMinFret;
+    jsonMinFret["name"] = "min_fret";
+    jsonMinFret["caption"] = "Min Fret";
+    jsonMinFret["datatype"] = "list";
+    jsonMinFret["values"] = nlohmann::json::array();
+    for (int i = 0; i <= 24; i++) {
+        nlohmann::json jsonValue;
+        jsonValue["value"] = i;
+        jsonValue["caption"] = "Fret #" + std::to_string(i);
+        jsonMinFret["values"].push_back(jsonValue);
+    }
+
+    // TODO redesign like a class filters
+    nlohmann::json jsonMaxFret;
+    jsonMaxFret["name"] = "max_fret";
+    jsonMaxFret["caption"] = "Max Fret";
+    jsonMaxFret["datatype"] = "list";
+    jsonMaxFret["values"] = nlohmann::json::array();
+    for (int i = 24; i >= 0; i--) {
+        nlohmann::json jsonValue;
+        jsonValue["value"] = i;
+        jsonValue["caption"] = "Fret #" + std::to_string(i);
+        jsonMaxFret["values"].push_back(jsonValue);
+    }
+
+    jsonResponse["result"].push_back(jsonMinFret);
+    jsonResponse["result"].push_back(jsonMaxFret);
     resp.ok().noCache().sendJson(jsonResponse);
     return true;
 }

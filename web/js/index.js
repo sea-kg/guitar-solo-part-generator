@@ -183,19 +183,67 @@ function play() {
 
 function generate() {
     stop();
+    var elems = $('.gspg-filter')
+    var filters = {}
+    for (var i = 0; i < elems.length; i++) {
+        var el = $(elems[i])
+        var filter_name = el.attr('filter-name');
+        var filter_value = el.val();
+        filters[filter_name] = filter_value;   
+    }
+
     $.ajax({
         url: "/api/v1/solo-generate",
-        method: "GET"
+        method: "GET",
+        data: filters
     }).done(function(resp){
         $('#tabulatur').html(resp['tabulatur']);
         window.soloData = resp["part"];
         console.log(window.soloData)
     }).fail(function(err){
         console.error(err)
+        window.soloData = [];
+        $('#tabulatur').html(err.statusText);
     })
 }
 
+function appendFilterList(_filter) {
+    var el = $('#filters');
+    var name = _filter["name"];
+    var _content = ''
+        + '<div class="input-group mb-3" id="min_fret_filter_parent">'
+        + '  <div class="input-group-prepend">'
+        + '    <label class="input-group-text" for="min_fret_filter">' + _filter["caption"] + '</label>'
+        + '  </div>'
+        + '  <select class="custom-select gspg-filter" filter-name="' + name + '" id="filter_' + name + '">'
+    for (var i in _filter["values"]) {
+        _content += '<option value="' + _filter["values"][i]["value"] + '">' + _filter["values"][i]["caption"] + '</option>';
+    }
+    _content += ''
+        + '  </select>'
+        + '</div>';
+    $('#filters').append(_content)
+}
+
+function applyAllowedFilters(resp) {
+    for (var t in resp["result"]) {
+        var _filter = resp["result"][t];
+        if (_filter['datatype'] === 'list') {
+            appendFilterList(_filter);
+        } else {
+            console.warn("Unknown type of filter=", _filter);
+        }
+    }
+}
+
 $(document).ready(function() {
-    
-    generate();
+    $.ajax({
+        url: "/api/v1/available-filters",
+        method: "GET"
+    }).done(function(resp){
+        applyAllowedFilters(resp);
+        generate();
+    }).fail(function(err){
+        console.error(err)
+    })
 })
