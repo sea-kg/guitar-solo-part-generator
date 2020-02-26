@@ -9,6 +9,8 @@ services:
       - GSPG_WEB=/home/user0/web # default web folder
     expose:
       - "1234"
+    volumes:
+      - "./guitar-solo-part-generator-logs:/home/user0/.logs"
     ports:
       - "1234:1234"
     restart: always

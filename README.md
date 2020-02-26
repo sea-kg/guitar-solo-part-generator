@@ -3,7 +3,7 @@ Guitar Solo Part Generator
 
 ## How to run latest from docker
 
-docker-compose.yml
+Example docker-compose.yml 
 ```
 version: '3'
 
@@ -15,6 +15,8 @@ services:
       - GSPG_WEB=/home/user0/web # default web folder
     expose:
       - "1234"
+    volumes:
+      - "./guitar-solo-part-generator-logs:/home/user0/.logs"
     ports:
       - "1234:1234"
     restart: always

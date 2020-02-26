@@ -35,6 +35,7 @@ COPY --from=0 /root/sources/guitar-solo-part-generator /usr/bin/guitar-solo-part
 COPY ./rules-sgg.txt /home/user0/rules-sgg.txt
 COPY ./gspg-config.yml /home/user0/gspg-config.yml
 COPY ./web /home/user0/web
+RUN mkdir -p /home/user0/.logs; chown -R user0:user0 /home/user0/.logs
 
 # Deprecated (move to config.yml):
 COPY ./rules-sgg.txt /home/user0/rules-sgg.txt
