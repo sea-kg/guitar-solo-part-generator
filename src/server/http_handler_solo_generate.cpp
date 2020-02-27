@@ -66,7 +66,7 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
     WSJCppLog::info(TAG, "start note: " + note.toPrintableString());
     SoloPartGuitar part;
     part.addNote(note);
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < 15; i++) {
         std::vector<PositionNoteGuitar> vNotes = m_rules.findWithBegin(note);
 
         // filter by min fret

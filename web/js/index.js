@@ -121,7 +121,11 @@ window.waves = createWaves(ac);
 // Musicial.js handles this by creating a queue of notes and passed only a limited set of notes to web audio API.
 //
 
-function addNote(_note, _time, _duration, _cleanuptime) {
+function updateTabulaturNoteEnded(idx) {
+    renderTabulatur("_tabulatur", window.soloData, window.guitarTunings, idx + 1);
+}
+
+function addNote(_note, _time, _duration, _cleanuptime, idx) {
     console.log(_note)
     var note = {};
     note["time"] = _time;
@@ -199,10 +203,12 @@ function addNote(_note, _time, _duration, _cleanuptime) {
     osc.setPeriodicWave(pwave);
     osc.connect(filter);
     osc.start(startTime);
+    console.log("start ", startTime);
     osc.stop(stopTime);
     osc.onended = function() { 
-        console.log(_note);
-        $('#currentnote').html(_note.note);
+        // console.log(_note);
+        updateTabulaturNoteEnded(idx);
+        // $('#currentnote').html(_note.note);
     };
     nodes.push(osc);
 
@@ -214,7 +220,8 @@ function addNote(_note, _time, _duration, _cleanuptime) {
         o2.start(startTime);
         o2.stop(stopTime);
         o2.onended = function() { 
-            console.log("o2", _note);
+            
+            // console.log("o2", _note, idx);
             // $('#currentnote').html(_note.note);
         };
         nodes.push(o2);
@@ -233,6 +240,8 @@ function stop() {
 function play() {
     stop();
 
+    updateTabulaturNoteEnded(-1);
+
     window.ac = new AudioContext()
     window.wave = waves['piano'];
     var dcn = ac.createDynamicsCompressor();
@@ -245,9 +254,11 @@ function play() {
     var intrument = $('#use_instrument').val();
     window.wave = waves[intrument];
     for (var i = 0; i < window.soloData.length; i++) {
-        addNote(window.soloData[i], i*0.3, 0.25, i*0.3);
+        addNote(window.soloData[i], i*0.3, 0.25, i*0.3, i);
     }  
 }
+
+window.guitarTunings = ["E4", "B3", "G3", "D3", "A2", "E2"]
 
 function generate() {
     stop();
@@ -267,10 +278,13 @@ function generate() {
     }).done(function(resp){
         $('#tabulatur').html(resp['tabulatur']);
         window.soloData = resp["part"];
+        renderTabulatur("_tabulatur", window.soloData, window.guitarTunings)
         console.log(window.soloData)
     }).fail(function(err){
         console.error(err)
         window.soloData = [];
+
+        renderTabulatur("_tabulatur", window.soloData, window.guitarTunings)
         $('#tabulatur').html(err.statusText);
     })
 }
