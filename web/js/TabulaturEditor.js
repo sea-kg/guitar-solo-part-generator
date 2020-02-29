@@ -2,6 +2,18 @@
 window.soloData = [];
 window.lastSelectedPosition = {str: -1, fret: 0, absTime: 0};
 
+function TabulaturEditor(elementId) {
+    var self = this;
+    self.data = []
+    self.frame = 0;
+    self.render = function() {
+        self.frame++;
+        console.log("render frame#" + self.frame);
+        return self.frame;
+    }
+    return self;
+}
+
 function renderTabulatur(elementId, guitarTunings, selectedNote) {
     console.log("renderTabulatur")
     var canvas = document.getElementById(elementId);

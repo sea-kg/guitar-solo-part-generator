@@ -122,6 +122,7 @@ window.waves = createWaves(ac);
 //
 
 function updateTabulaturNoteEnded(idx) {
+    window.tabeditor.render();
     renderTabulatur("_tabulatur", window.guitarTunings, idx + 1);
 }
 
@@ -272,18 +273,19 @@ function generate() {
     }
 
     $.ajax({
-        url: "/api/v1/solo-generate",
+        url: "./api/v1/solo-generate",
         method: "GET",
         data: filters
     }).done(function(resp){
         $('#tabulatur').html(resp['tabulatur']);
         window.soloData = resp["part"];
+        window.tabeditor.render();
         renderTabulatur("_tabulatur", window.guitarTunings)
         console.log(window.soloData)
     }).fail(function(err){
         console.error(err)
         window.soloData = [];
-
+        window.tabeditor.render();
         renderTabulatur("_tabulatur", window.guitarTunings)
         $('#tabulatur').html(err.statusText);
     })
@@ -337,7 +339,7 @@ function applyAllowedFilters(resp) {
 function initFilters(callback) {
     document.getElementById('filters').innerHTML = "";
     $.ajax({
-        url: "/api/v1/available-filters",
+        url: "./api/v1/available-filters",
         method: "GET"
     }).done(function(resp){
         applyAllowedFilters(resp);
@@ -350,6 +352,7 @@ function initFilters(callback) {
 }
 
 $(document).ready(function() {
+    window.tabeditor = new TabulaturEditor('_tabulatur')
     initFilters(function() {
         generate();
     })
