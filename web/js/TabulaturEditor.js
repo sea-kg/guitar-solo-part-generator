@@ -1,5 +1,8 @@
 
-function renderTabulatur(elementId, part, guitarTunings, selectedNote) {
+window.soloData = [];
+window.lastSelectedPosition = {str: -1, fret: 0, absTime: 0};
+
+function renderTabulatur(elementId, guitarTunings, selectedNote) {
     console.log("renderTabulatur")
     var canvas = document.getElementById(elementId);
     var ctx = canvas.getContext('2d');
@@ -68,9 +71,9 @@ function renderTabulatur(elementId, part, guitarTunings, selectedNote) {
 
     var fontSize = 14;
     ctx.font = fontSize + "px Arial";
-    for (var i in part) {
+    for (var i in window.soloData) {
         i = parseInt(i)
-        var note = part[i];
+        var note = window.soloData[i];
         var fret = note["fret"]
         var txt = "" + fret;
         var mTxt = ctx.measureText(txt);

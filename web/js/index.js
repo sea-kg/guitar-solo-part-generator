@@ -71,7 +71,7 @@ window.onhashchange = function() {
     console.log("onhashchange");
 }
 
-window.soloData = [];
+
 
 var notes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 
@@ -122,7 +122,7 @@ window.waves = createWaves(ac);
 //
 
 function updateTabulaturNoteEnded(idx) {
-    renderTabulatur("_tabulatur", window.soloData, window.guitarTunings, idx + 1);
+    renderTabulatur("_tabulatur", window.guitarTunings, idx + 1);
 }
 
 function addNote(_note, _time, _duration, _cleanuptime, idx) {
@@ -278,13 +278,13 @@ function generate() {
     }).done(function(resp){
         $('#tabulatur').html(resp['tabulatur']);
         window.soloData = resp["part"];
-        renderTabulatur("_tabulatur", window.soloData, window.guitarTunings)
+        renderTabulatur("_tabulatur", window.guitarTunings)
         console.log(window.soloData)
     }).fail(function(err){
         console.error(err)
         window.soloData = [];
 
-        renderTabulatur("_tabulatur", window.soloData, window.guitarTunings)
+        renderTabulatur("_tabulatur", window.guitarTunings)
         $('#tabulatur').html(err.statusText);
     })
 }
