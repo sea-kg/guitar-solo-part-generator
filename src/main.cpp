@@ -18,7 +18,7 @@ int main(int argc, const char* argv[]) {
     if (!WSJCppCore::dirExists(".logs")) {
         WSJCppCore::makeDir(".logs");
     }
-    WSJCppLog::setPrefixLogFile("wsjcpp");
+    WSJCppLog::setPrefixLogFile("gspg");
     WSJCppLog::setLogDirectory(".logs");
 
     std::string sRulesFilename = "./rules-sgg.txt";

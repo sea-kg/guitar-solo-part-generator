@@ -7,8 +7,7 @@
     <script src="js/jquery-3.4.1.min.js"></script>
     <script src="js/popper-1.14.6-umd.min.js"></script>
     <script src="js/bootstrap-4.4.1.min.js"></script>
-
-
+    <script src="js/TabulaturEditor.js"></script>
     <script src="js/createWaves.js"></script>
     <script src="js/index.js"></script>
 </head>
@@ -19,8 +18,8 @@
         Tabulatur
       </div>
       <div class="card-body">
-        <pre id="tabulatur"></pre>
-      
+        <pre id="tabulatur" style="display: none"></pre>
+        <canvas id="_tabulatur" height="250px" width="850px"></canvas>
         <form class="form-inline">
           <div class="form-group mb-2">
             <input type="text" readonly class="form-control-plaintext" value="Instrument for play">
