@@ -279,6 +279,8 @@ function generate() {
     }).done(function(resp){
         $('#tabulatur').html(resp['tabulatur']);
         window.soloData = resp["part"];
+        tabeditor.updateData(resp["part"]);
+        console.log(tabeditor.sirealizeToString());
         window.tabeditor.render();
         renderTabulatur("_tabulatur", window.guitarTunings)
         console.log(window.soloData)

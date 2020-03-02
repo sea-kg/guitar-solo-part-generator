@@ -4,8 +4,24 @@ window.lastSelectedPosition = {str: -1, fret: 0, absTime: 0};
 
 function TabulaturEditor(elementId) {
     var self = this;
-    self.data = []
+    self.data = [];
+    self.countOfStirngs = 6;
+    self.guitarTunings = ["E4", "B3", "G3", "D3", "A2", "E2"];  // classic
+
     self.frame = 0;
+    self.updateData = function(newData) {
+        self.data = []
+        self.data = newData;
+    }
+    self.sirealizeToString = function() {
+        var s = "[[" + self.guitarTunings.join(",") + "]";
+        for (var i = 0; i < self.data.length; i++) {
+            var note = self.data[i];
+            s += ",[" + note.finger.toUpperCase()[0] + "," + note.string + "," + note.fret + "," + note.duration + "]"
+        }
+        s += "]";
+        return s;
+    }
     self.render = function() {
         self.frame++;
         console.log("render frame#" + self.frame);
