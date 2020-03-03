@@ -330,7 +330,7 @@ function appendFilterList(_filter) {
 function applyAllowedFilters(resp) {
     for (var t in resp["result"]) {
         var _filter = resp["result"][t];
-        if (_filter['datatype'] === 'list') {
+        if (_filter['datatype'] === 'select_list') {
             appendFilterList(_filter);
         } else {
             console.warn("Unknown type of filter=", _filter);

@@ -7,6 +7,7 @@
 #include <wsjcpp_light_web_server.h>
 #include "solo_part_guitar.h"
 #include <wsjcpp_light_web_http_handler_web_folder.h>
+
 #include "http_handler_available_filters.h"
 #include "http_handler_solo_generate.h"
 
@@ -53,7 +54,11 @@ int main(int argc, const char* argv[]) {
 
     std::cout << "Found rules " << rules.getSize() << std::endl;
 
-    
+    std::vector<GuitarSoloPartGenerateFilterBase *> vFilters;
+    vFilters.push_back(new GuitarSoloPartGenerateFilterMinFret());
+    vFilters.push_back(new GuitarSoloPartGenerateFilterMaxFret());
+    vFilters.push_back(new GuitarSoloPartGenerateFilterNotes());
+    vFilters.push_back(new GuitarSoloPartGenerateFilterUseStrings());
 
     if (argc == 2 && std::string(argv[1]) == "start-server") {
 
@@ -78,8 +83,8 @@ int main(int argc, const char* argv[]) {
         WSJCppLightWebServer server;
         server.setPort(nPort);
         server.setMaxWorkers(2);
-        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerAvailableFilters(rules));
-        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerSoloGenerate(rules));
+        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerAvailableFilters(rules, vFilters));
+        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerSoloGenerate(rules, vFilters));
         server.addHandler((WSJCppLightWebHttpHandlerBase *)new WSJCppLightWebHttpHandlerWebFolder("/", "./web"));
         server.startSync();
         return -1;
@@ -97,7 +102,7 @@ int main(int argc, const char* argv[]) {
         (GuitarNumberString)nFirstString, 
         nFirstFret, 
         (GuitarTouchFinger)nFirstFinger, 
-        ::GUITAR_DURATION_OF_NOTE_CROTCHET
+        ::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET
     );
 
     WSJCppLog::info(TAG, "start note: " + note.toPrintableString());

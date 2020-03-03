@@ -126,7 +126,7 @@ bool SoloPartGuitarRules::apply(const std::string &sRule, std::string &sError) {
                     (GuitarNumberString)beginString, 
                     nBeginFinger == GuitarTouchFinger::GUITAR_NO_FINGER ? 0 : beginFret, 
                     nBeginFinger, 
-                    GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_SEMIBREVE
+                    GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
                 );
                 // std::cout << beginPos.toPrintableString();
 
@@ -134,7 +134,7 @@ bool SoloPartGuitarRules::apply(const std::string &sRule, std::string &sError) {
                     (GuitarNumberString)nEndString,
                     nEndFinger == GuitarTouchFinger::GUITAR_NO_FINGER ? 0 : nEndFret, 
                     nEndFinger, 
-                    GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_SEMIBREVE
+                    GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
                 );
                 // std::cout << " -> " << endPos.toPrintableString() << std::endl;
                 add(SoloPartGuitarRule(beginPos, endPos));
@@ -180,7 +180,7 @@ std::vector<PositionNoteGuitar> SoloPartGuitarRules::findWithBegin(PositionNoteG
         note.getGuitarString(),
         note.getFret(),
         note.getFinger(),
-        GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_SEMIBREVE
+        GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
     );
 
     for (int i = 0; i < m_vRules.size(); i++) {

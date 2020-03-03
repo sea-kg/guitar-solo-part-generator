@@ -4,10 +4,16 @@
 
 // ----------------------------------------------------------------------
 
-HttpHandlerSoloGenerate::HttpHandlerSoloGenerate(const SoloPartGuitarRules &rules)
+HttpHandlerSoloGenerate::HttpHandlerSoloGenerate(
+    const SoloPartGuitarRules &rules, 
+    const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters
+)
 : WSJCppLightWebHttpHandlerBase("solo-generate") {
     TAG = "HttpHandlerSoloGenerate";
     m_rules = rules;
+    for (int i = 0; i < vFilters.size(); i++) {
+        m_vFilters.push_back(vFilters[i]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -60,7 +66,7 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
         (GuitarNumberString)nFirstString, 
         nFirstFret, 
         (GuitarTouchFinger)nFirstFinger, 
-        ::GUITAR_DURATION_OF_NOTE_CROTCHET
+        ::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET
     );
 
     WSJCppLog::info(TAG, "start note: " + note.toPrintableString());

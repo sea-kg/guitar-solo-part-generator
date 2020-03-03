@@ -159,7 +159,7 @@ PositionNoteGuitar::PositionNoteGuitar() {
     m_nGuitarString = GuitarNumberString::GUITAR_STRING_6;
     m_nFret = 0;
     m_nFinger = GuitarTouchFinger::GUITAR_NO_FINGER;
-    m_nDuration = GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_CROTCHET; // 1/4
+    m_nDuration = GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET; // 1/4
     checkAndThrow();
 }
 
