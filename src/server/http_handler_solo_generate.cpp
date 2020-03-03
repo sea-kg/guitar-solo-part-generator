@@ -45,24 +45,17 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
     std::vector<WSJCppLightWebHttpRequestQueryValue> vQueries = pRequest->getRequestQueryParams();
 
     int nFirstString = (std::rand() % 6) + 1;
-    int nFirstFret = (std::rand() % 24);
     int nFirstFinger = (std::rand() % 5);
-    if (nFirstFret == 0) {
-        nFirstFinger = 0;
-    } else {
-        nFirstFinger = (std::rand() % 4) + 1;
-    }
     PositionNoteGuitar note(
         (GuitarNumberString)nFirstString, 
-        nFirstFret, 
-        (GuitarTouchFinger)nFirstFinger, 
-        ::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET
+        0, 
+        ::GUITAR_NO_FINGER, 
+        ::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
     );
 
     WSJCppLog::info(TAG, "start note: " + note.toPrintableString());
     SoloPartGuitar part;
-    part.addNote(note);
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 16; i++) {
         std::vector<PositionNoteGuitar> vNotes = m_rules.findWithBegin(note);
 
         for (int f = 0; f < m_vFilters.size(); f++) {
