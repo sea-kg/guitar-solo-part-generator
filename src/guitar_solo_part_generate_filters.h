@@ -6,6 +6,7 @@
 #include <json.hpp>
 
 #include "guitar_solo_part_generator_enums.h"
+#include "position_note_guitar.h" // TODO rename guitar finger position
 
 class GuitarSoloPartGenerateFilterBase {
     public:
@@ -21,7 +22,10 @@ class GuitarSoloPartGenerateFilterBase {
         std::string getCaption();
         std::string getDescription();
         virtual nlohmann::json getJsonValues() = 0;
-
+        virtual std::vector<PositionNoteGuitar> applyFilter(
+            const std::vector<PositionNoteGuitar> &vNotes, 
+            const std::string &sValue
+        ) = 0;
     protected:
         std::string TAG;
     private:
@@ -37,7 +41,10 @@ class GuitarSoloPartGenerateFilterMinFret : public GuitarSoloPartGenerateFilterB
     public: 
         GuitarSoloPartGenerateFilterMinFret();
         virtual nlohmann::json getJsonValues();
-
+        virtual std::vector<PositionNoteGuitar> applyFilter(
+            const std::vector<PositionNoteGuitar> &vNotes, 
+            const std::string &sValue
+        );
     private:
         int m_nFromFret;
         int m_nToFret;
@@ -49,7 +56,10 @@ class GuitarSoloPartGenerateFilterMaxFret : public GuitarSoloPartGenerateFilterB
     public: 
         GuitarSoloPartGenerateFilterMaxFret();
         virtual nlohmann::json getJsonValues();
-
+        virtual std::vector<PositionNoteGuitar> applyFilter(
+            const std::vector<PositionNoteGuitar> &vNotes, 
+            const std::string &sValue
+        );
     private:
         int m_nFromFret;
         int m_nToFret;
@@ -61,7 +71,10 @@ class GuitarSoloPartGenerateFilterNotes : public GuitarSoloPartGenerateFilterBas
     public: 
         GuitarSoloPartGenerateFilterNotes();
         virtual nlohmann::json getJsonValues();
-
+        virtual std::vector<PositionNoteGuitar> applyFilter(
+            const std::vector<PositionNoteGuitar> &vNotes, 
+            const std::string &sValue
+        );
     private:
         std::vector<std::string> m_vNotes;
 };
@@ -72,7 +85,10 @@ class GuitarSoloPartGenerateFilterUseStrings : public GuitarSoloPartGenerateFilt
     public: 
         GuitarSoloPartGenerateFilterUseStrings();
         virtual nlohmann::json getJsonValues();
-
+        virtual std::vector<PositionNoteGuitar> applyFilter(
+            const std::vector<PositionNoteGuitar> &vNotes, 
+            const std::string &sValue
+        );
     private:
         std::vector<std::string> m_vStrings;
 };

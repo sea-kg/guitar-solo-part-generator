@@ -55,7 +55,7 @@ bool SoloPartGuitarRules::apply(const std::string &sRule, std::string &sError) {
         } else {
             bBeginFretVar = true;
         }
-        GuitarTouchFinger nBeginFinger = NoteGuitarConverter::valueToFinger(matches[3].str());
+        GuitarTouchFinger nBeginFinger = GuitarSoloPartGeneratorEnums::valueToFinger(matches[3].str());
 
         std::string sEndGuitarString = matches[4].str();
         int nDefinedEndGuitarString = -1;
@@ -79,7 +79,7 @@ bool SoloPartGuitarRules::apply(const std::string &sRule, std::string &sError) {
             sError = "Has not defined variable in left part (for fret)";
             return false;
         }
-        GuitarTouchFinger nEndFinger = NoteGuitarConverter::valueToFinger(matches[6].str());
+        GuitarTouchFinger nEndFinger = GuitarSoloPartGeneratorEnums::valueToFinger(matches[6].str());
         for (int beginString = beginStringRange.getMin(); beginString <= beginStringRange.getMax(); beginString++) {
             int nEndString = nDefinedEndGuitarString;
             for (int beginFret = beginFretRange.getMin(); beginFret <= beginFretRange.getMax(); beginFret++) {

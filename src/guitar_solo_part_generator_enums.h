@@ -46,4 +46,12 @@ enum GuitarDurationOfNote {
     // GUITAR_DURATION_OF_NOTE_demisemihemidemisemiquaver = 256 // 1/256
 };
 
+// ---------------------------------------------------------------------
+
+class GuitarSoloPartGeneratorEnums {
+    public:
+        static GuitarTouchFinger valueToFinger(const std::string &sValue);
+        static std::string fingerToValue(GuitarTouchFinger nFinger);
+};
+
 #endif // GUITAR_SOLO_PART_GENERATOR_ENUMS_H

@@ -6,14 +6,6 @@
 
 // ---------------------------------------------------------------------
 
-class NoteGuitarConverter {
-    public:
-        static GuitarTouchFinger valueToFinger(const std::string &sValue);
-        static std::string fingerToValue(GuitarTouchFinger nFinger);
-};
-
-// ---------------------------------------------------------------------
-
 class GuitarStringRange {
     public:
         GuitarStringRange();

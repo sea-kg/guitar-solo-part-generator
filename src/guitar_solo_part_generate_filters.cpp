@@ -79,6 +79,22 @@ nlohmann::json GuitarSoloPartGenerateFilterMinFret::getJsonValues() {
 }
 
 // ----------------------------------------------------------------------
+
+std::vector<PositionNoteGuitar> GuitarSoloPartGenerateFilterMinFret::applyFilter(
+    const std::vector<PositionNoteGuitar> &vNotes, 
+    const std::string &sValue
+) {
+    int nFilterMinFret = atoi(sValue.c_str());
+    std::vector<PositionNoteGuitar> vRet;
+    for (int i = 0; i < vNotes.size(); i++) {
+        if (vNotes[i].getFret() >= nFilterMinFret) {
+            vRet.push_back(vNotes[i]);
+        }
+    }
+    return vRet;
+}
+
+// ----------------------------------------------------------------------
 // GuitarSoloPartGenerateFilterMaxFret
 
 GuitarSoloPartGenerateFilterMaxFret::GuitarSoloPartGenerateFilterMaxFret()
@@ -102,6 +118,22 @@ nlohmann::json GuitarSoloPartGenerateFilterMaxFret::getJsonValues() {
 }
 
 // ----------------------------------------------------------------------
+
+std::vector<PositionNoteGuitar> GuitarSoloPartGenerateFilterMaxFret::applyFilter(
+    const std::vector<PositionNoteGuitar> &vNotes, 
+    const std::string &sValue
+) {
+    int nFilterMaxFret = atoi(sValue.c_str());
+    std::vector<PositionNoteGuitar> vRet;
+    for (int i = 0; i < vNotes.size(); i++) {
+        if (vNotes[i].getFret() < nFilterMaxFret) {
+            vRet.push_back(vNotes[i]);
+        }
+    }
+    return vRet;
+}
+
+// ----------------------------------------------------------------------
 // GuitarSoloPartGenerateFilterNotes
 
 GuitarSoloPartGenerateFilterNotes::GuitarSoloPartGenerateFilterNotes()
@@ -116,10 +148,20 @@ nlohmann::json GuitarSoloPartGenerateFilterNotes::getJsonValues() {
     for (int i = 0; i < m_vNotes.size(); i++) {
         nlohmann::json jsonValue;
         jsonValue["value"] = m_vNotes[i];
-        jsonValue["caption"] = "Note " + m_vNotes[i];
+        jsonValue["checked"] = true;
+        jsonValue["caption"] = "" + m_vNotes[i];
         jsonValues.push_back(jsonValue);
     }
     return jsonValues;
+}
+
+// ----------------------------------------------------------------------
+
+std::vector<PositionNoteGuitar> GuitarSoloPartGenerateFilterNotes::applyFilter(
+    const std::vector<PositionNoteGuitar> &vNotes, 
+    const std::string &sValue
+) {
+    return vNotes;
 }
 
 // ----------------------------------------------------------------------
@@ -137,8 +179,20 @@ nlohmann::json GuitarSoloPartGenerateFilterUseStrings::getJsonValues() {
     for (int i = 0; i < m_vStrings.size(); i++) {
         nlohmann::json jsonValue;
         jsonValue["value"] = m_vStrings[i];
-        jsonValue["caption"] = "String #" + m_vStrings[i];
+        jsonValue["checked"] = true;
+        jsonValue["caption"] = "#" + m_vStrings[i];
         jsonValues.push_back(jsonValue);
     }
     return jsonValues;
 }
+
+// ----------------------------------------------------------------------
+
+std::vector<PositionNoteGuitar> GuitarSoloPartGenerateFilterUseStrings::applyFilter(
+    const std::vector<PositionNoteGuitar> &vNotes, 
+    const std::string &sValue
+) {
+    return vNotes;
+}
+
+// ----------------------------------------------------------------------
