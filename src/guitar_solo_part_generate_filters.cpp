@@ -1,6 +1,8 @@
 
 #include "guitar_solo_part_generate_filters.h"
 #include <wsjcpp_core.h>
+#include <sstream>
+#include <algorithm>
 
 // ----------------------------------------------------------------------
 // GuitarSoloPartGenerateFilterBase
@@ -192,7 +194,28 @@ std::vector<PositionNoteGuitar> GuitarSoloPartGenerateFilterUseStrings::applyFil
     const std::vector<PositionNoteGuitar> &vNotes, 
     const std::string &sValue
 ) {
-    return vNotes;
+    std::vector<int> vFilteredStrings;
+    std::stringstream ss(sValue);
+    std::string sToken;
+    while (std::getline(ss, sToken, '|')) {
+        int nString = atoi(sToken.c_str());
+        vFilteredStrings.push_back(nString);
+    }
+    
+    std::vector<PositionNoteGuitar> vRet;
+    for (int i = 0; i < vNotes.size(); i++) {
+        int nString = vNotes[i].getGuitarString();
+        bool bAdd = false;
+        for (int s = 0; s < vFilteredStrings.size(); s++) {
+            if (vFilteredStrings[s] == nString) {
+                bAdd = true;
+            }
+        }
+        if (bAdd) {
+            vRet.push_back(vNotes[i]);
+        }
+    }
+    return vRet;
 }
 
 // ----------------------------------------------------------------------

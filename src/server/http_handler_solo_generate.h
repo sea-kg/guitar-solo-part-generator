@@ -17,9 +17,9 @@ class HttpHandlerSoloGenerate : WSJCppLightWebHttpHandlerBase {
     private:
         std::string TAG;
         SoloPartGuitarRules m_rules;
-        std::vector<GuitarSoloPartGenerateFilterBase *> m_vFilters; 
-        std::vector<PositionNoteGuitar> filterByMinFret(const std::vector<PositionNoteGuitar> &vNotes, int nFilterMinFret);
-        std::vector<PositionNoteGuitar> filterByMaxFret(const std::vector<PositionNoteGuitar> &vNotes, int nFilterMaxFret);
-        
+        std::vector<GuitarSoloPartGenerateFilterBase *> m_vFilters;
+
+        void replaceAll(std::string& str, const std::string& from, const std::string& to);
+        std::string decodeURIElement(const std::string& sValue);
 };
 #endif // HTTP_HANDLER_SOLO_GENERATE_H
