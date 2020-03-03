@@ -263,13 +263,13 @@ window.guitarTunings = ["E4", "B3", "G3", "D3", "A2", "E2"]
 
 function generate() {
     stop();
-    var elems = $('.gspg-filter')
     var filters = {}
-    for (var i = 0; i < elems.length; i++) {
-        var el = $(elems[i])
-        var filter_name = el.attr('filter-name');
-        var filter_value = el.val();
-        filters[filter_name] = filter_value;   
+    for (var i = 0; i < window.available_filters.length; i++) {
+        var f = window.available_filters[i]
+        var filter_name = f['name'];
+        if (containsPageParam(filter_name)) {
+            filters[filter_name] = pageParams[filter_name];
+        }
     }
 
     $.ajax({
@@ -279,6 +279,8 @@ function generate() {
     }).done(function(resp){
         $('#tabulatur').html(resp['tabulatur']);
         window.soloData = resp["part"];
+        tabeditor.updateData(resp["part"]);
+        console.log(tabeditor.sirealizeToString());
         window.tabeditor.render();
         renderTabulatur("_tabulatur", window.guitarTunings)
         console.log(window.soloData)
@@ -297,7 +299,7 @@ function changedValueOfList(e) {
     changeLocationState(pageParams)
 }
 
-function appendFilterList(_filter) {
+function appendFilterSelectList(_filter) {
     var name = _filter["name"];
     var pre_val = "";
     if (containsPageParam(name)) {
@@ -306,9 +308,9 @@ function appendFilterList(_filter) {
         pre_val = _filter["values"][0]["value"]
     }
     var _content = ''
-        + '<div class="input-group mb-3" id="min_fret_filter_parent">'
+        + '<div class="input-group mb-3">'
         + '  <div class="input-group-prepend">'
-        + '    <label class="input-group-text" for="min_fret_filter">' + _filter["caption"] + '</label>'
+        + '    <label class="input-group-text">' + _filter["caption"] + '</label>'
         + '  </div>'
         + '  <select class="custom-select gspg-filter" filter-name="' + name + '" id="filter_' + name + '" onchange="changedValueOfList(this)">'
     for (var i in _filter["values"]) {
@@ -322,19 +324,83 @@ function appendFilterList(_filter) {
 
         // onchange="myFunction()"
     document.getElementById('filters').innerHTML += _content;
+}
+
+function changedValueOfCheckboxList(e) {
+    var filter_name = e.getAttribute('filter-name')
+    
+    if (e.classList.contains("checked")) {
+        e.classList.remove("checked");
+    } else {
+        e.classList.add("checked");
+    }
+    var fields = document.getElementsByClassName('checkbox-container');
+    var values = []
+    for (var i = 0; i < fields.length; i ++) {
+        var field = fields[i]
+        if (field.getAttribute('filter-name') == filter_name) {
+            if (field.classList.contains("checked")) {
+                values.push(field.getAttribute('filter-value'))
+            }
+        }
+    }
+    pageParams[filter_name] = values.join("|")
+    changeLocationState(pageParams)
+}
+
+function appendFilterCheckboxList(_filter) {
+    var name = _filter["name"];
+    var values = _filter["values"]
+    var checked_vals = [];
+    if (containsPageParam(name)) {
+        checked_vals = pageParams[name]
+        checked_vals = checked_vals.split("|")
+    } else {
+        for (var i in values) {
+            if (values[i]["checked"] == true) {
+                checked_vals.push(values[i]["value"])
+            }
+        }
+    }
+    console.log(checked_vals)
+
+    var _content = ''
+        + '<div>'
+        + _filter['caption'] + ': ';
+    for (var i in values) {
+        var _value = values[i]["value"]
+        var _caption = values[i]["caption"]
+        var _checked = values[i]["checked"] == true ? "checked" : "";
+        if (checked_vals.indexOf(_value) !== -1) {
+            _checked = 'checked'
+        } else {
+            _checked = ''
+        }
+        _content += ''
+            + '<div class="checkbox-container ' + _checked + '" '
+            + ' filter-name="' + name + '" '
+            + ' filter-value="' + _value + '" '
+            + ' onclick="changedValueOfCheckboxList(this)"'
+            + '>' + _caption + '</div>';
+    }
+    _content += '</div>';
+    document.getElementById('filters').innerHTML += _content;
 
 }
 
 function applyAllowedFilters(resp) {
     for (var t in resp["result"]) {
         var _filter = resp["result"][t];
-        if (_filter['datatype'] === 'list') {
-            appendFilterList(_filter);
+        if (_filter['datatype'] === 'select_list') {
+            appendFilterSelectList(_filter);
+        } else if (_filter['datatype'] === 'checkbox_list') {
+            appendFilterCheckboxList(_filter);
         } else {
             console.warn("Unknown type of filter=", _filter);
         }
     }
 }
+window.available_filters = []
 
 function initFilters(callback) {
     document.getElementById('filters').innerHTML = "";
@@ -342,6 +408,7 @@ function initFilters(callback) {
         url: "./api/v1/available-filters",
         method: "GET"
     }).done(function(resp){
+        window.available_filters = resp['result'];
         applyAllowedFilters(resp);
         if (callback) {
             callback()

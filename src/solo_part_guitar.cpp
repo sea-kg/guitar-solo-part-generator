@@ -90,7 +90,7 @@ nlohmann::json SoloPartGuitar::exportToJson() {
         nlohmann::json jsonNote;
         jsonNote["string"] = note.getGuitarString();
         jsonNote["fret"] = note.getFret();
-        jsonNote["finger"] = NoteGuitarConverter::fingerToValue(note.getFinger());
+        jsonNote["finger"] = GuitarSoloPartGeneratorEnums::fingerToValue(note.getFinger());
         jsonNote["duration"] = note.getDuration();
         jsonNote["note"] = findNoteByPosition(note);
         json.push_back(jsonNote);

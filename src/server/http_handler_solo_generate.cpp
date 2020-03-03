@@ -4,10 +4,16 @@
 
 // ----------------------------------------------------------------------
 
-HttpHandlerSoloGenerate::HttpHandlerSoloGenerate(const SoloPartGuitarRules &rules)
+HttpHandlerSoloGenerate::HttpHandlerSoloGenerate(
+    const SoloPartGuitarRules &rules, 
+    const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters
+)
 : WSJCppLightWebHttpHandlerBase("solo-generate") {
     TAG = "HttpHandlerSoloGenerate";
     m_rules = rules;
+    for (int i = 0; i < vFilters.size(); i++) {
+        m_vFilters.push_back(vFilters[i]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -37,46 +43,31 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
     int nFilterMinFret = 0;
     int nFilterMaxFret = 24;
     std::vector<WSJCppLightWebHttpRequestQueryValue> vQueries = pRequest->getRequestQueryParams();
-    for (int i = 0; i < vQueries.size(); i++) {
-        WSJCppLightWebHttpRequestQueryValue query = vQueries[i];
-        std::string sName = query.getName();
-        std::string sValue = query.getValue();
-        if (sName == "min_fret") {
-            nFilterMinFret = atoi(sValue.c_str());
-        } else if (sName == "max_fret") {
-            nFilterMaxFret = atoi(sValue.c_str());
-        }
-    }
 
     int nFirstString = (std::rand() % 6) + 1;
-    int nFirstFret = (std::rand() % 24);
     int nFirstFinger = (std::rand() % 5);
-    if (nFirstFret == 0) {
-        nFirstFinger = 0;
-    } else {
-        nFirstFinger = (std::rand() % 4) + 1;
-    }
     PositionNoteGuitar note(
         (GuitarNumberString)nFirstString, 
-        nFirstFret, 
-        (GuitarTouchFinger)nFirstFinger, 
-        ::GUITAR_DURATION_OF_NOTE_CROTCHET
+        0, 
+        ::GUITAR_NO_FINGER, 
+        ::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
     );
 
     WSJCppLog::info(TAG, "start note: " + note.toPrintableString());
     SoloPartGuitar part;
-    part.addNote(note);
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 16; i++) {
         std::vector<PositionNoteGuitar> vNotes = m_rules.findWithBegin(note);
 
-        // filter by min fret
-        if (nFilterMinFret != 0) { // not default
-            vNotes = filterByMinFret(vNotes, nFilterMinFret);
-        }
-
-        // filter by max fret
-        if (nFilterMaxFret != 0) { // not default
-            vNotes = filterByMaxFret(vNotes, nFilterMaxFret);
+        for (int f = 0; f < m_vFilters.size(); f++) {
+            GuitarSoloPartGenerateFilterBase *pFilter = m_vFilters[f];
+            std::string sFilterName = pFilter->getName();
+            for (int q = 0; q < vQueries.size(); q++) {
+                WSJCppLightWebHttpRequestQueryValue query = vQueries[q];
+                if (query.getName() == sFilterName) {
+                    std::string sValue = decodeURIElement(query.getValue());
+                    vNotes = pFilter->applyFilter(vNotes, sValue);
+                }
+            }
         }
 
         std::cout << "Found possible note " << vNotes.size() << std::endl;
@@ -99,26 +90,24 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
 
 // ----------------------------------------------------------------------
 
-std::vector<PositionNoteGuitar> HttpHandlerSoloGenerate::filterByMinFret(const std::vector<PositionNoteGuitar> &vNotes, int nFilterMinFret) {
-    std::vector<PositionNoteGuitar> vRet;
-    for (int i = 0; i < vNotes.size(); i++) {
-        if (vNotes[i].getFret() >= nFilterMinFret) {
-            vRet.push_back(vNotes[i]);
-        }
+void HttpHandlerSoloGenerate::replaceAll(std::string& str, const std::string& from, const std::string& to) {
+    if(from.empty())
+        return;
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
-    return vRet;
 }
 
 // ----------------------------------------------------------------------
 
-std::vector<PositionNoteGuitar> HttpHandlerSoloGenerate::filterByMaxFret(const std::vector<PositionNoteGuitar> &vNotes, int nFilterMaxFret) {
-    std::vector<PositionNoteGuitar> vRet;
-    for (int i = 0; i < vNotes.size(); i++) {
-        if (vNotes[i].getFret() < nFilterMaxFret) {
-            vRet.push_back(vNotes[i]);
-        }
-    }
-    return vRet;
+std::string HttpHandlerSoloGenerate::decodeURIElement(const std::string& sValue) {
+    // TODO replace to full solution
+    std::string sRet = sValue;
+    replaceAll(sRet, "%7C", "|");
+    replaceAll(sRet, "%23", "#");
+    return sRet;
 }
 
 // ----------------------------------------------------------------------

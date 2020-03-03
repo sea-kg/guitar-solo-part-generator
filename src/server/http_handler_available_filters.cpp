@@ -4,10 +4,13 @@
 
 // ----------------------------------------------------------------------
 
-HttpHandlerAvailableFilters::HttpHandlerAvailableFilters(const SoloPartGuitarRules &rules)
+HttpHandlerAvailableFilters::HttpHandlerAvailableFilters(const SoloPartGuitarRules &rules, const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters)
 : WSJCppLightWebHttpHandlerBase("available-filters") {
     TAG = "HttpHandlerAvailableFilters";
     m_rules = rules;
+    for (int i = 0; i < vFilters.size(); i++) {
+        m_vFilters.push_back(vFilters[i]);
+    }
 }
 
 // ----------------------------------------------------------------------
@@ -35,36 +38,19 @@ bool HttpHandlerAvailableFilters::handle(const std::string &sWorkerId, WSJCppLig
     }
 
     nlohmann::json jsonResponse;
-    jsonResponse["result"] = nlohmann::json::array();
+    nlohmann::json jsonResult = nlohmann::json::array();
 
-    // TODO redesign like a class filters
-    nlohmann::json jsonMinFret;
-    jsonMinFret["name"] = "min_fret";
-    jsonMinFret["caption"] = "Min Fret";
-    jsonMinFret["datatype"] = "list";
-    jsonMinFret["values"] = nlohmann::json::array();
-    for (int i = 0; i <= 24; i++) {
-        nlohmann::json jsonValue;
-        jsonValue["value"] = i;
-        jsonValue["caption"] = "Fret #" + std::to_string(i);
-        jsonMinFret["values"].push_back(jsonValue);
+    for (int i = 0; i < m_vFilters.size(); i++) {
+        GuitarSoloPartGenerateFilterBase *pFilter = m_vFilters[i];
+        nlohmann::json jsonFilter;
+        jsonFilter["name"] = pFilter->getName();
+        jsonFilter["datatype"] = pFilter->getDataTypeAsString();
+        jsonFilter["caption"] = pFilter->getCaption();
+        jsonFilter["description"] = pFilter->getDescription();
+        jsonFilter["values"] = pFilter->getJsonValues();
+        jsonResult.push_back(jsonFilter);
     }
-
-    // TODO redesign like a class filters
-    nlohmann::json jsonMaxFret;
-    jsonMaxFret["name"] = "max_fret";
-    jsonMaxFret["caption"] = "Max Fret";
-    jsonMaxFret["datatype"] = "list";
-    jsonMaxFret["values"] = nlohmann::json::array();
-    for (int i = 24; i >= 0; i--) {
-        nlohmann::json jsonValue;
-        jsonValue["value"] = i;
-        jsonValue["caption"] = "Fret #" + std::to_string(i);
-        jsonMaxFret["values"].push_back(jsonValue);
-    }
-
-    jsonResponse["result"].push_back(jsonMinFret);
-    jsonResponse["result"].push_back(jsonMaxFret);
+    jsonResponse["result"] = jsonResult;
     resp.ok().noCache().sendJson(jsonResponse);
     return true;
 }
