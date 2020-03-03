@@ -71,7 +71,7 @@ class PositionNoteGuitar {
         
         GuitarNumberString m_nGuitarString;
         int m_nFret; // 0..24
-        GuitarTouchFinger m_nFinger; // TODO enum
+        GuitarTouchFinger m_nFinger;
         GuitarDurationOfNote m_nDuration; // 1,2,4,8,16,32
 };
 

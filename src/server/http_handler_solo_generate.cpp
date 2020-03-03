@@ -97,8 +97,6 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
 
 // ----------------------------------------------------------------------
 
-// ----------------------------------------------------------------------
-
 void HttpHandlerSoloGenerate::replaceAll(std::string& str, const std::string& from, const std::string& to) {
     if(from.empty())
         return;

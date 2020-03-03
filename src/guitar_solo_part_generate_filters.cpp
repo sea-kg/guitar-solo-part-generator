@@ -141,6 +141,20 @@ std::vector<PositionNoteGuitar> GuitarSoloPartGenerateFilterMaxFret::applyFilter
 GuitarSoloPartGenerateFilterNotes::GuitarSoloPartGenerateFilterNotes()
 : GuitarSoloPartGenerateFilterBase("use_notes", ::GSPG_FILTER_DATATYPE_CHECKBOX_LIST, "Use a notes", "Filter by notes") {
     m_vNotes = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+
+    // init m_vAllNameOfNotes
+    for (int o = 0; o < 9; o++) {
+        for (int n = 0; n < 12; n++) {
+            m_vAllNameOfNotes.push_back(m_vNotes[n] + std::to_string(o));
+        }
+    }
+
+    m_vGuitarStartStringNotes.push_back("E4"); // 1 string
+    m_vGuitarStartStringNotes.push_back("B3");
+    m_vGuitarStartStringNotes.push_back("G3");
+    m_vGuitarStartStringNotes.push_back("D3");
+    m_vGuitarStartStringNotes.push_back("A2");
+    m_vGuitarStartStringNotes.push_back("E2"); // 6 string
 }
 
 // ----------------------------------------------------------------------
@@ -163,7 +177,45 @@ std::vector<PositionNoteGuitar> GuitarSoloPartGenerateFilterNotes::applyFilter(
     const std::vector<PositionNoteGuitar> &vNotes, 
     const std::string &sValue
 ) {
-    return vNotes;
+    std::vector<std::string> vFilteredNotes;
+    std::stringstream ss(sValue);
+    std::string sToken;
+    while (std::getline(ss, sToken, '|')) {
+        vFilteredNotes.push_back(sToken);
+    }
+
+    // todo redesign
+    std::vector<PositionNoteGuitar> vRet;
+    for (int i = 0; i < vNotes.size(); i++) {
+        std::string sNote = findNoteByPosition(vNotes[i]);
+        sNote = sNote.substr(0, sNote.size() - 1);
+
+        bool bAdd = false;
+        for (int s = 0; s < vFilteredNotes.size(); s++) {
+            if (vFilteredNotes[s] == sNote) {
+                bAdd = true;
+            }
+        }
+        if (bAdd) {
+            vRet.push_back(vNotes[i]);
+        }
+    }
+    return vRet;
+}
+
+// ---------------------------------------------------------------------
+
+std::string GuitarSoloPartGenerateFilterNotes::findNoteByPosition(const PositionNoteGuitar &note) {
+    int nString = note.getGuitarString();
+    std::string sPos0 = m_vGuitarStartStringNotes[nString-1];
+    int nPos0 = -1;
+    for (int i = 0; i < m_vAllNameOfNotes.size(); i++) {
+        if (m_vAllNameOfNotes[i] == sPos0) {
+            nPos0 = i;
+            break;
+        }
+    }
+    return m_vAllNameOfNotes[nPos0 + note.getFret()];
 }
 
 // ----------------------------------------------------------------------

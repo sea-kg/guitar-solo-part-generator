@@ -77,6 +77,9 @@ class GuitarSoloPartGenerateFilterNotes : public GuitarSoloPartGenerateFilterBas
         );
     private:
         std::vector<std::string> m_vNotes;
+        std::vector<std::string> m_vAllNameOfNotes;
+        std::vector<std::string> m_vGuitarStartStringNotes;
+        std::string findNoteByPosition(const PositionNoteGuitar &note);
 };
 
 // ----------------------------------------------------------------------
