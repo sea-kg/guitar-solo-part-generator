@@ -1,13 +1,12 @@
 #include <wsjcpp_core.h>
 #include "http_handler_available_filters.h"
-#include "solo_part_guitar.h"
 
 // ----------------------------------------------------------------------
 
-HttpHandlerAvailableFilters::HttpHandlerAvailableFilters(const SoloPartGuitarRules &rules, const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters)
-: WSJCppLightWebHttpHandlerBase("available-filters") {
+HttpHandlerAvailableFilters::HttpHandlerAvailableFilters(
+    const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters
+) : WSJCppLightWebHttpHandlerBase("available-filters") {
     TAG = "HttpHandlerAvailableFilters";
-    m_rules = rules;
     for (int i = 0; i < vFilters.size(); i++) {
         m_vFilters.push_back(vFilters[i]);
     }

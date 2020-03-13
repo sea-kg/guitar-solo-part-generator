@@ -1,19 +1,126 @@
-#include "solo_part_guitar_rules.h"
+#include "guitar_solo_part_generator_movement_rules.h"
+#include <wsjcpp_core.h>
 #include <regex>
 #include <iostream>
 #include <wsjcpp_core.h>
 #include <wsjcpp_validators.h>
 
 // ---------------------------------------------------------------------
-// SoloPartGuitarRules
+// GuitarSoloPartGeneratorMovementRule
 
-SoloPartGuitarRules::SoloPartGuitarRules() {
-    TAG = "SoloPartGuitarRules";
+GuitarSoloPartGeneratorMovementRule::GuitarSoloPartGeneratorMovementRule(
+    const std::string &sRule,
+    const GuitarSoloPartGeneratorFingerPosition &positionBegin, 
+    const GuitarSoloPartGeneratorFingerPosition &positionEnd
+) {
+    TAG = "GuitarSoloPartGeneratorMovementRule";
+    m_sRule = sRule;
+    m_positionBegin = positionBegin;
+    m_positionEnd = positionEnd;
 }
 
 // ---------------------------------------------------------------------
 
-bool SoloPartGuitarRules::apply(const std::string &sRule, std::string &sError) {
+GuitarSoloPartGeneratorFingerPosition GuitarSoloPartGeneratorMovementRule::getPositionBegin() const {
+    return m_positionBegin;
+}
+
+// ---------------------------------------------------------------------
+
+GuitarSoloPartGeneratorFingerPosition GuitarSoloPartGeneratorMovementRule::getPositionEnd() const {
+    return m_positionEnd;
+}
+
+// ---------------------------------------------------------------------
+
+bool GuitarSoloPartGeneratorMovementRule::operator==(const GuitarSoloPartGeneratorMovementRule &rhs) const {
+    return m_positionBegin == rhs.m_positionBegin && m_positionEnd == rhs.m_positionEnd;
+}
+
+
+// ---------------------------------------------------------------------
+// GuitarSoloPartGeneratorMovementRules
+
+GuitarSoloPartGeneratorMovementRules::GuitarSoloPartGeneratorMovementRules() {
+    TAG = "GuitarSoloPartGeneratorMovementRules";
+    m_vPredefineRules = {
+        // allow three fingers for solo (for begginer)
+        // index finger
+        // middle finger
+        // ring finger
+        // little finger
+
+        // moving by one string
+        "{X string, Y fret, no finger} move to {X string, Y fret, index finger}",
+        "{X string, Y fret, no finger} move to {X string, Y fret, middle finger}",
+        "{X string, Y fret, no finger} move to {X string, Y fret, ring finger}",
+        "{X string, Y fret, no finger} move to {X string, Y fret, little finger}",
+
+        // moving by one string forward
+        "{X string, Y fret, index finger} move to {X string, Y+1 fret, index finger}",
+        "{X string, Y fret, index finger} move to {X string, Y+1 fret, middle finger}",
+        "{X string, Y fret, index finger} move to {X string, Y+2 fret, ring finger}",
+        "{X string, Y fret, index finger} move to {X string, Y+3 fret, ring finger}",
+        "{X string, Y fret, index finger} move to {X string, Y+3 fret, little finger}",
+        "{X string, Y fret, index finger} move to {X string, Y+4 fret, little finger}",
+
+        // moving by one string backward
+        "{X string, Y fret, middle finger} move to {X string, Y-1 fret, middle finger}",
+        "{X string, Y fret, middle finger} move to {X string, Y-2 fret, middle finger}",
+        // "{X string, Y fret, middle finger} move to {X string, Y-1 fret, index finger}",
+        // "{X string, Y fret, ring finger} move to {X string, Y-1 fret, middle finger}",
+        // "{X string, Y fret, ring finger} move to {X string, Y-2 fret, index finger}",
+
+        "{X string, Y fret, index finger} move to {X+2 string, 0 fret, no finger}",
+
+        "{X string, Y fret, index finger} move to {X+1 string, Y+2 fret, middle finger}",
+        "{X string, Y fret, index finger} move to {X+2 string, Y+2 fret, ring finger}",
+        "{X string, Y fret, index finger} move to {X+3 string, Y+2 fret, little finger}"
+    };
+}
+
+// ---------------------------------------------------------------------
+
+std::vector<std::string> GuitarSoloPartGeneratorMovementRules::getPredefinedRules() {
+    return m_vPredefineRules;
+}
+
+// ---------------------------------------------------------------------
+
+void GuitarSoloPartGeneratorMovementRules::applyPredefinedRules() {
+    
+    // from silent
+    GuitarSoloPartGeneratorFingerPosition silentNote;
+    for (int nFret = 0; nFret < 24; nFret++) {
+        for (int nString = 1; nString < 6; nString++) {
+            for (int nFinger = 1; nFinger < 4; nFinger++) {
+                add(
+                    GuitarSoloPartGeneratorMovementRule(
+                        "silent", 
+                        silentNote, 
+                        GuitarSoloPartGeneratorFingerPosition(
+                            (GuitarNumberString)nString,
+                            nFret,
+                            (nFret == 0 ? ::GUITAR_NO_FINGER : (GuitarTouchFinger)nFinger)
+                        )
+                    )
+                );
+            }
+        }
+    }
+
+    std::string sError;
+    for (int i = 0; i < m_vPredefineRules.size(); i++) {
+        std::string sPredefinedRule = m_vPredefineRules[i];
+        if (!apply(sPredefinedRule, sError)) {
+            WSJCppLog::throw_err(TAG, sError);
+        }
+    }
+}
+
+// ---------------------------------------------------------------------
+
+bool GuitarSoloPartGeneratorMovementRules::apply(const std::string &sRule, std::string &sError) {
     // TODO parse
     // {X string, 0 fret, no finger} move to {X string, 1 fret, any finger}
 
@@ -122,24 +229,22 @@ bool SoloPartGuitarRules::apply(const std::string &sRule, std::string &sError) {
                     continue;
                 }
 
-                PositionNoteGuitar beginPos(
-                    (GuitarNumberString)beginString, 
+                GuitarSoloPartGeneratorFingerPosition beginPos(
+                    beginString,
                     nBeginFinger == GuitarTouchFinger::GUITAR_NO_FINGER ? 0 : beginFret, 
-                    nBeginFinger, 
-                    GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
+                    nBeginFinger
                 );
                 // std::cout << beginPos.toPrintableString();
 
-                PositionNoteGuitar endPos(
-                    (GuitarNumberString)nEndString,
+                GuitarSoloPartGeneratorFingerPosition endPos(
+                    nEndString,
                     nEndFinger == GuitarTouchFinger::GUITAR_NO_FINGER ? 0 : nEndFret, 
-                    nEndFinger, 
-                    GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
+                    nEndFinger
                 );
                 // std::cout << " -> " << endPos.toPrintableString() << std::endl;
-                add(SoloPartGuitarRule(beginPos, endPos));
+                add(GuitarSoloPartGeneratorMovementRule(sRule, beginPos, endPos));
                 if (beginPos != endPos) {
-                    add(SoloPartGuitarRule(endPos, beginPos)); // reverted
+                    add(GuitarSoloPartGeneratorMovementRule(sRule, endPos, beginPos)); // reverted
                 }
             }
         }
@@ -152,13 +257,13 @@ bool SoloPartGuitarRules::apply(const std::string &sRule, std::string &sError) {
 
 // ---------------------------------------------------------------------
 
-void SoloPartGuitarRules::add(const SoloPartGuitarRule &rule) {
+void GuitarSoloPartGeneratorMovementRules::add(const GuitarSoloPartGeneratorMovementRule &rule) {
     for (int i = 0; i < m_vRules.size(); i++) {
         if (rule == m_vRules[i]) {
             WSJCppLog::warn(TAG, 
                 "Skip rule " 
-                + rule.getNoteBegin().toPrintableString() 
-                + " -> "  + rule.getNoteEnd().toPrintableString()
+                + rule.getPositionBegin().toPrintableString() 
+                + " -> "  + rule.getPositionEnd().toPrintableString()
             );
             return;
         }
@@ -168,24 +273,31 @@ void SoloPartGuitarRules::add(const SoloPartGuitarRule &rule) {
 
 // ---------------------------------------------------------------------
 
-int SoloPartGuitarRules::getSize() {
+int GuitarSoloPartGeneratorMovementRules::getSize() {
     return m_vRules.size();
 }
 
 // ---------------------------------------------------------------------
 
-std::vector<PositionNoteGuitar> SoloPartGuitarRules::findWithBegin(PositionNoteGuitar note) {
+std::vector<PositionNoteGuitar> GuitarSoloPartGeneratorMovementRules::findWithBegin(PositionNoteGuitar note) {
     std::vector<PositionNoteGuitar> vFoundNotes;
-    PositionNoteGuitar currectNote(
+    GuitarSoloPartGeneratorFingerPosition currentPosition(
         note.getGuitarString(),
         note.getFret(),
-        note.getFinger(),
-        GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
+        note.getFinger()
     );
 
+    
+
     for (int i = 0; i < m_vRules.size(); i++) {
-        if (m_vRules[i].getNoteBegin() == currectNote) {
-            vFoundNotes.push_back(m_vRules[i].getNoteEnd());
+        if (m_vRules[i].getPositionBegin() == currentPosition) {
+            GuitarSoloPartGeneratorFingerPosition positionEnd = m_vRules[i].getPositionEnd();
+            vFoundNotes.push_back(PositionNoteGuitar(
+                (GuitarNumberString)positionEnd.getGuitarString(),
+                positionEnd.getFret(),
+                positionEnd.getFinger(),
+                GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
+            ));
         }   
     }
 
@@ -195,7 +307,7 @@ std::vector<PositionNoteGuitar> SoloPartGuitarRules::findWithBegin(PositionNoteG
 // ---------------------------------------------------------------------
 // TODO move to core
 
-std::string SoloPartGuitarRules::replaceSubstring(
+std::string GuitarSoloPartGeneratorMovementRules::replaceSubstring(
     const std::string& sValue, 
     const std::string& sSource, 
     const std::string& sTarget
@@ -211,7 +323,7 @@ std::string SoloPartGuitarRules::replaceSubstring(
 
 // ---------------------------------------------------------------------
 
-bool SoloPartGuitarRules::replaceAndExecute(
+bool GuitarSoloPartGeneratorMovementRules::replaceAndExecute(
     const std::string &sExpr, 
     const std::string &sVarName, 
     int nValue, 

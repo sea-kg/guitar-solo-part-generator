@@ -11,12 +11,15 @@ enum GuitarSoloPartGeneratorFilterDataType {
 // ---------------------------------------------------------------------
 
 enum GuitarNumberString {
+    GUITAR_STRING_NO = 0,
     GUITAR_STRING_1 = 1,
     GUITAR_STRING_2 = 1,
     GUITAR_STRING_3 = 2,
     GUITAR_STRING_4 = 4,
     GUITAR_STRING_5 = 5,
-    GUITAR_STRING_6 = 6
+    GUITAR_STRING_6 = 6,
+    GUITAR_STRING_7 = 7,
+    GUITAR_STRING_8 = 8
 };
 
 // ---------------------------------------------------------------------

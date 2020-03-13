@@ -2,13 +2,13 @@
 #define HTTP_HANDLER_SOLO_GENERATE_H
 
 #include <wsjcpp_light_web_server.h>
-#include "solo_part_guitar_rules.h"
 #include "guitar_solo_part_generate_filters.h"
+#include "guitar_solo_part_generator_movement_rules.h"
 
 class HttpHandlerSoloGenerate : WSJCppLightWebHttpHandlerBase {
     public:
         HttpHandlerSoloGenerate(
-            const SoloPartGuitarRules &rules, 
+            GuitarSoloPartGeneratorMovementRules *pMovementRules, 
             const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters
         );
         virtual bool canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest);
@@ -16,10 +16,12 @@ class HttpHandlerSoloGenerate : WSJCppLightWebHttpHandlerBase {
 
     private:
         std::string TAG;
-        SoloPartGuitarRules m_rules;
+        GuitarSoloPartGeneratorMovementRules *m_pMovementRules;
         std::vector<GuitarSoloPartGenerateFilterBase *> m_vFilters;
 
+        // TODO core
         void replaceAll(std::string& str, const std::string& from, const std::string& to);
+        // TODO core
         std::string decodeURIElement(const std::string& sValue);
 };
 #endif // HTTP_HANDLER_SOLO_GENERATE_H

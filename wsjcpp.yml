@@ -8,8 +8,8 @@ cmake_cxx_standard: "11"
 description: "1"
 
 authors:
-  - name: "1"
-    email: "1"
+  - name: "Evgenii Sopov"
+    email: "mrseakg@gmail.com"
 
 origins:
   - address: "https://sea-kg.com/wsjcpp-package-registry/"
@@ -74,3 +74,5 @@ unit-tests:
       description: "Rule Parser"
     - name: "NoteGuitarConverter"
       description: "test convertor"
+    - name: "MovementRules"
+      description: "Test parsing rules"

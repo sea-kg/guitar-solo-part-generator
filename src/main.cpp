@@ -10,6 +10,7 @@
 
 #include "http_handler_available_filters.h"
 #include "http_handler_solo_generate.h"
+#include "http_handler_movement_rules.h"
 
 int main(int argc, const char* argv[]) {
     std::string TAG = "MAIN";
@@ -22,37 +23,10 @@ int main(int argc, const char* argv[]) {
     WSJCppLog::setPrefixLogFile("gspg");
     WSJCppLog::setLogDirectory(".logs");
 
-    std::string sRulesFilename = "./rules-sgg.txt";
-    std::string sRules = "";
-    if (!WSJCppCore::readTextFile(sRulesFilename, sRules)) {
-        WSJCppLog::err(TAG, "Could not read file '" + sRulesFilename + "'");
-        return -1;
-    }
-    // parse rules
-    SoloPartGuitarRules rules;
-    std::stringstream ss(sRules);
-    std::string sRule;
-    std::string sError = "";
-    int nNumberOfLine = 0;
-    while (std::getline(ss, sRule, '\n')) {
-        nNumberOfLine++;
-        sRule = WSJCppCore::trim(sRule);
-        if (sRule.length() == 0) {
-            continue;
-        }
-        if (sRule[0] == '#') {
-            // skip comment
-            continue;
-        }
-        
-        if (!rules.apply(sRule, sError)) {
-            WSJCppLog::err(TAG, "Line (" + sRulesFilename + ":" + std::to_string(nNumberOfLine) + ") '" + sRule + "' has error: " + sError);
-            return -1;
-        }
-        // cont.push_back(token);
-    }
+    GuitarSoloPartGeneratorMovementRules *pMovementRules = new GuitarSoloPartGeneratorMovementRules();
+    pMovementRules->applyPredefinedRules();
 
-    std::cout << "Found rules " << rules.getSize() << std::endl;
+    std::cout << "Found rules " << pMovementRules->getSize() << std::endl;
 
     std::vector<GuitarSoloPartGenerateFilterBase *> vFilters;
     vFilters.push_back(new GuitarSoloPartGenerateFilterMinFret());
@@ -83,8 +57,9 @@ int main(int argc, const char* argv[]) {
         WSJCppLightWebServer server;
         server.setPort(nPort);
         server.setMaxWorkers(2);
-        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerAvailableFilters(rules, vFilters));
-        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerSoloGenerate(rules, vFilters));
+        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerAvailableFilters(vFilters));
+        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerMovementRules(pMovementRules));
+        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerSoloGenerate(pMovementRules, vFilters));
         server.addHandler((WSJCppLightWebHttpHandlerBase *)new WSJCppLightWebHttpHandlerWebFolder("/", "./web"));
         server.startSync();
         return -1;
@@ -109,7 +84,7 @@ int main(int argc, const char* argv[]) {
     SoloPartGuitar part;
     part.addNote(note);
     for (int i = 0; i < 12; i++) {
-        std::vector<PositionNoteGuitar> vNotes = rules.findWithBegin(note);
+        std::vector<PositionNoteGuitar> vNotes = pMovementRules->findWithBegin(note);
         std::cout << "Found possible note " << vNotes.size() << std::endl;
         if (vNotes.size() == 0) { // TODO come to no finger
             WSJCppLog::err(TAG, "Not found");

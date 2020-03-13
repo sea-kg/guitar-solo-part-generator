@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 #include "position_note_guitar.h"
-#include "solo_part_guitar_rules.h"
 #include <json.hpp>
 
 // ---------------------------------------------------------------------

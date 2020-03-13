@@ -5,12 +5,12 @@
 // ----------------------------------------------------------------------
 
 HttpHandlerSoloGenerate::HttpHandlerSoloGenerate(
-    const SoloPartGuitarRules &rules, 
+    GuitarSoloPartGeneratorMovementRules *pMovementRules, 
     const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters
 )
 : WSJCppLightWebHttpHandlerBase("solo-generate") {
     TAG = "HttpHandlerSoloGenerate";
-    m_rules = rules;
+    m_pMovementRules = pMovementRules;
     for (int i = 0; i < vFilters.size(); i++) {
         m_vFilters.push_back(vFilters[i]);
     }
@@ -56,7 +56,7 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
     WSJCppLog::info(TAG, "start note: " + note.toPrintableString());
     SoloPartGuitar part;
     for (int i = 0; i < 16; i++) {
-        std::vector<PositionNoteGuitar> vNotes = m_rules.findWithBegin(note);
+        std::vector<PositionNoteGuitar> vNotes = m_pMovementRules->findWithBegin(note);
 
         for (int f = 0; f < m_vFilters.size(); f++) {
             GuitarSoloPartGenerateFilterBase *pFilter = m_vFilters[f];
@@ -71,13 +71,16 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
         }
 
         std::cout << "Found possible note " << vNotes.size() << std::endl;
-        if (vNotes.size() == 0) { // TODO come to no finger
-            resp.badRequest().noCache().sendText("Could not generate with this params");
-            return false;
+        if (vNotes.size() == 0) {
+            // silent
+            note = PositionNoteGuitar(::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE);
+            part.addNote(note);
+            // resp.badRequest().noCache().sendText("Could not generate with this params");
+        } else {
+            note = vNotes[std::rand() % vNotes.size()];
+            part.addNote(note);
+            WSJCppLog::info(TAG, "note[" + std::to_string(i) + "] = " + note.toPrintableString());
         }
-        note = vNotes[std::rand() % vNotes.size()];
-        part.addNote(note);
-        WSJCppLog::info(TAG, "note[" + std::to_string(i) + "] = " + note.toPrintableString());
     }
     nlohmann::json jsonResponse;
     jsonResponse["tabulatur"] = part.exportTabulatur();

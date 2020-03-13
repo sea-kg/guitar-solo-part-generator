@@ -45,6 +45,8 @@ class GuitarFretRange {
 };
 
 // ---------------------------------------------------------------------
+// PositionNoteGuitar
+// !deprecated
 
 class PositionNoteGuitar {
     public:
@@ -53,6 +55,9 @@ class PositionNoteGuitar {
             GuitarNumberString nGuitarString, 
             int nFret, 
             GuitarTouchFinger nFinger, 
+            GuitarDurationOfNote nDuration
+        );
+        PositionNoteGuitar( // empty == silent
             GuitarDurationOfNote nDuration
         );
         GuitarNumberString getGuitarString() const;
@@ -69,8 +74,8 @@ class PositionNoteGuitar {
 
         void checkAndThrow();
         
-        GuitarNumberString m_nGuitarString;
-        int m_nFret; // 0..24
+        GuitarNumberString m_nGuitarString; // 1 .. 8
+        int m_nFret; // 0..24 
         GuitarTouchFinger m_nFinger;
         GuitarDurationOfNote m_nDuration; // 1,2,4,8,16,32
 };

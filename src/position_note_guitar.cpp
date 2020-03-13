@@ -142,6 +142,18 @@ PositionNoteGuitar::PositionNoteGuitar(
 
 // ---------------------------------------------------------------------
 
+PositionNoteGuitar::PositionNoteGuitar( // empty == silent
+    GuitarDurationOfNote nDuration
+) {
+    m_nGuitarString = GuitarNumberString::GUITAR_STRING_NO;
+    m_nFret = -1;
+    m_nFinger = GuitarTouchFinger::GUITAR_NO_FINGER;
+    m_nDuration = nDuration;
+    checkAndThrow();
+}
+
+// ---------------------------------------------------------------------
+
 GuitarNumberString PositionNoteGuitar::getGuitarString() const {
     return m_nGuitarString;
 }
@@ -202,11 +214,11 @@ std::string PositionNoteGuitar::toPrintableString() {
 // ---------------------------------------------------------------------
 
 void PositionNoteGuitar::checkAndThrow() {
-    if (m_nGuitarString < 1 || m_nGuitarString > 6) {
-        WSJCppLog::throw_err(TAG, "GuitarString must be in range 1..6");
+    if (m_nGuitarString < 0 || m_nGuitarString > 8) {
+        WSJCppLog::throw_err(TAG, "GuitarString must be in range 1..8");
     }
-    if (m_nFret < 0 || m_nFret > 24) {
-        WSJCppLog::throw_err(TAG, "Fret must be in range 0..24");
+    if (m_nFret < -1 || m_nFret > 24) {
+        WSJCppLog::throw_err(TAG, "Fret must be in range -1..24");
     }
     if (
         m_nFinger != GuitarTouchFinger::GUITAR_NO_FINGER 
@@ -218,12 +230,18 @@ void PositionNoteGuitar::checkAndThrow() {
         WSJCppLog::throw_err(TAG, "Finger must be in [GUITAR_NO_FINGER, GUITAR_INDEX_FINGER, GUITAR_MIDDLE_FINGER, GUITAR_RING_FINGER, GUITAR_LITTLE_FINGER]");
     }
     if (m_nDuration < 0 || m_nDuration > 32) {
-        WSJCppLog::throw_err(TAG, "Finger must be in range 1..32");
+        WSJCppLog::throw_err(TAG, "Duration must be in range 1..32");
     }
     if (m_nFret == 0 && m_nFinger != GuitarTouchFinger::GUITAR_NO_FINGER) {
         WSJCppLog::throw_err(TAG, "if fret == 0 then finger must be GUITAR_NO_FINGER");
     }
-    if (m_nFret != 0 && m_nFinger == GuitarTouchFinger::GUITAR_NO_FINGER) {
+    if (m_nFret == -1 && m_nFinger != GuitarTouchFinger::GUITAR_NO_FINGER) {
+        WSJCppLog::throw_err(TAG, "if fret == -1 then finger must be not GUITAR_NO_FINGER");
+    }
+    if (m_nFret > 0 && m_nFinger == GuitarTouchFinger::GUITAR_NO_FINGER) {
         WSJCppLog::throw_err(TAG, "if fret != 0 then finger must be not GUITAR_NO_FINGER");
+    }
+    if (m_nGuitarString == 0 && m_nFinger != GuitarTouchFinger::GUITAR_NO_FINGER) {
+        WSJCppLog::throw_err(TAG, "if GuitarString == 0 then finger must be not GUITAR_NO_FINGER");
     }
 }
