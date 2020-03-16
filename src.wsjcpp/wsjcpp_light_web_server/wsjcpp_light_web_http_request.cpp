@@ -107,7 +107,7 @@ void WSJCppLightWebHttpRequest::appendRecieveRequest(const std::string &sRequest
             }
             m_vHeaders.push_back(sLine);
 
-            WSJCppCore::to_lower(sLine);
+            sLine = WSJCppCore::toLower(sLine);
             if (!sLine.compare(0, sContentLengthPrefix.size(), sContentLengthPrefix)) {
                 m_nContentLength = atoi(sLine.substr(sContentLengthPrefix.size()).c_str());
                 // WSJCppLog::warn(TAG, "Content-Length: " + std::to_string(m_nContentLength));
@@ -184,8 +184,8 @@ void WSJCppLightWebHttpRequest::parseFirstLine(const std::string &sHeader) {
             std::string sValue = sParam.substr(nFound2+1);
             std::string sName = sParam.substr(0, nFound2);
             m_vRequestQueryParams.push_back(WSJCppLightWebHttpRequestQueryValue(
-                this->decodeURIElement(sName), 
-                this->decodeURIElement(sValue)
+                WSJCppCore::decodeUriComponent(sName), 
+                WSJCppCore::decodeUriComponent(sValue)
             ));
         }
     }
@@ -193,7 +193,3 @@ void WSJCppLightWebHttpRequest::parseFirstLine(const std::string &sHeader) {
 
 // ----------------------------------------------------------------------
 
-std::string WSJCppLightWebHttpRequest::decodeURIElement(const std::string &sElement) { // TODO move to WSJCppCore
-    WSJCppLog::warn(TAG, "TODO Implement decodeURIElement");
-    return sElement;
-}

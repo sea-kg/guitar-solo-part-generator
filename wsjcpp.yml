@@ -46,7 +46,7 @@ distribution:
 
 dependencies:
   - name: "wsjcpp-core"
-    version: "v0.0.6"
+    version: "v0.0.7"
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
@@ -61,7 +61,7 @@ dependencies:
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_validators"
   - name: "wsjcpp-light-web-server"
-    version: "v0.0.1"
+    version: "v0.0.2"
     url: "https://github.com/wsjcpp/wsjcpp-light-web-server:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_light_web_server"

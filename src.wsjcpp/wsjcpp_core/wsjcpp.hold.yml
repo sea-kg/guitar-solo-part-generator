@@ -3,7 +3,7 @@ cmake_cxx_standard: 11
 cmake_minimum_required: 3.0
 
 name: wsjcpp-core
-version: v0.0.6
+version: v0.0.7
 description: Basic Utils for wsjcpp
 issues: https://github.com/wsjcpp/wsjcpp-core/issues
 repositories:
@@ -48,3 +48,17 @@ unit-tests:
       description: "Test generation uuids"
     - name: "GetEnv"
       description: "Test getEnv function"
+    - name: "ToLower"
+      description: "Test toLower"
+    - name: "ReplaceAll"
+      description: "Test replace all"
+    - name: "DecodeUriComponent"
+      description: "Check decoding"
+    - name: "EncodeUriComponent"
+      description: "Check encoding"
+    - name: "Uint2HexString"
+      description: "Test convert unsigned int to hex string"
+    - name: "Split"
+      description: "Test split function"
+    - name: "CreateEmptyFile"
+      description: "Test create empty file"

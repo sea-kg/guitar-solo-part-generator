@@ -64,7 +64,7 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
             for (int q = 0; q < vQueries.size(); q++) {
                 WSJCppLightWebHttpRequestQueryValue query = vQueries[q];
                 if (query.getName() == sFilterName) {
-                    std::string sValue = decodeURIElement(query.getValue());
+                    std::string sValue = query.getValue();
                     vNotes = pFilter->applyFilter(vNotes, sValue);
                 }
             }
@@ -89,28 +89,6 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
     resp.ok().noCache().sendJson(jsonResponse);
 
     return true;
-}
-
-// ----------------------------------------------------------------------
-
-void HttpHandlerSoloGenerate::replaceAll(std::string& str, const std::string& from, const std::string& to) {
-    if(from.empty())
-        return;
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
-    }
-}
-
-// ----------------------------------------------------------------------
-
-std::string HttpHandlerSoloGenerate::decodeURIElement(const std::string& sValue) {
-    // TODO replace to full solution
-    std::string sRet = sValue;
-    replaceAll(sRet, "%7C", "|");
-    replaceAll(sRet, "%23", "#");
-    return sRet;
 }
 
 // ----------------------------------------------------------------------

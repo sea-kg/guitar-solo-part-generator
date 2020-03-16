@@ -43,7 +43,6 @@ class WSJCppLightWebHttpRequest {
         std::string TAG;
 
         void parseFirstLine(const std::string &sHeader);
-        std::string decodeURIElement(const std::string &sElement); // TODO move to WSJCppCore
 
         enum EnumParserState {
             START,
