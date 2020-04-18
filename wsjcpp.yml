@@ -1,8 +1,5 @@
 name: "guitar-solo-part-generator"
-main-cmakelists:
-  auto-genearted: true
-  last-sha1: ""
-version: "v0.0.1"
+version: "v0.1.0"
 cmake_minimum_required: "3.0"
 cmake_cxx_standard: "11"
 description: "1"
@@ -50,11 +47,6 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-core:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_core"
-  - name: "nlohmann/json"
-    version: "v3.7.3"
-    url: "https://github.com/wsjcpp/json:develop"
-    origin: "https://github.com/"
-    installation-dir: "./src.wsjcpp/nlohmann_json"
   - name: "wsjcpp-validators"
     version: "v0.0.3"
     url: "https://github.com/wsjcpp/wsjcpp-validators:master"
@@ -65,6 +57,11 @@ dependencies:
     url: "https://github.com/wsjcpp/wsjcpp-light-web-server:master"
     origin: "https://github.com/"
     installation-dir: "./src.wsjcpp/wsjcpp_light_web_server"
+  - name: "nlohmann/json"
+    version: "v3.7.3"
+    url: "https://github.com/nlohmann/json:develop"
+    origin: "https://github.com/"
+    installation-dir: "./src.wsjcpp/nlohmann_json"
 
 unit-tests:
   cases:
