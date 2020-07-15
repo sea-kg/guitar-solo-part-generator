@@ -4,11 +4,11 @@
 #include <wsjcpp_light_web_server.h>
 #include "guitar_solo_part_generator_movement_rules.h"
 
-class HttpHandlerMovementRules : WSJCppLightWebHttpHandlerBase {
+class HttpHandlerMovementRules : public WsjcppLightWebHttpHandlerBase {
     public:
         HttpHandlerMovementRules(GuitarSoloPartGeneratorMovementRules  *pMovementRules);
-        virtual bool canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest);
-        virtual bool handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest);
+        virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) override;
+        virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) override;
 
     private:
         std::string TAG;

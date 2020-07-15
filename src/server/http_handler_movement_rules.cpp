@@ -4,14 +4,14 @@
 // ----------------------------------------------------------------------
 
 HttpHandlerMovementRules::HttpHandlerMovementRules(GuitarSoloPartGeneratorMovementRules  *pMovementRules) 
-: WSJCppLightWebHttpHandlerBase("movement-rules") {
+: WsjcppLightWebHttpHandlerBase("movement-rules") {
     TAG = "HttpHandlerMovementRules";
     m_pMovementRules = pMovementRules;
 }
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerMovementRules::canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool HttpHandlerMovementRules::canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
 
@@ -23,12 +23,12 @@ bool HttpHandlerMovementRules::canHandle(const std::string &sWorkerId, WSJCppLig
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerMovementRules::handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool HttpHandlerMovementRules::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
-    // WSJCppLog::warn(_tag, sRequestPath);
+    // WsjcppLog::warn(_tag, sRequestPath);
     
-    WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
+    WsjcppLightWebHttpResponse resp(pRequest->getSockFd());
     if (sRequestPath != "/api/v1/movement-rules/" && sRequestPath != "/api/v1/movement-rules") {
         return false;
     }

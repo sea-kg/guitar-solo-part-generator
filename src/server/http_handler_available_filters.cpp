@@ -5,7 +5,7 @@
 
 HttpHandlerAvailableFilters::HttpHandlerAvailableFilters(
     const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters
-) : WSJCppLightWebHttpHandlerBase("available-filters") {
+) : WsjcppLightWebHttpHandlerBase("available-filters") {
     TAG = "HttpHandlerAvailableFilters";
     for (int i = 0; i < vFilters.size(); i++) {
         m_vFilters.push_back(vFilters[i]);
@@ -14,7 +14,7 @@ HttpHandlerAvailableFilters::HttpHandlerAvailableFilters(
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerAvailableFilters::canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool HttpHandlerAvailableFilters::canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
 
@@ -26,12 +26,12 @@ bool HttpHandlerAvailableFilters::canHandle(const std::string &sWorkerId, WSJCpp
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerAvailableFilters::handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool HttpHandlerAvailableFilters::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
-    // WSJCppLog::warn(_tag, sRequestPath);
+    // WsjcppLog::warn(_tag, sRequestPath);
     
-    WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
+    WsjcppLightWebHttpResponse resp(pRequest->getSockFd());
     if (sRequestPath != "/api/v1/available-filters/" && sRequestPath != "/api/v1/available-filters") {
         return false;
     }

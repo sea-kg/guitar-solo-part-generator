@@ -8,7 +8,7 @@ HttpHandlerSoloGenerate::HttpHandlerSoloGenerate(
     GuitarSoloPartGeneratorMovementRules *pMovementRules, 
     const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters
 )
-: WSJCppLightWebHttpHandlerBase("solo-generate") {
+: WsjcppLightWebHttpHandlerBase("solo-generate") {
     TAG = "HttpHandlerSoloGenerate";
     m_pMovementRules = pMovementRules;
     for (int i = 0; i < vFilters.size(); i++) {
@@ -18,7 +18,7 @@ HttpHandlerSoloGenerate::HttpHandlerSoloGenerate(
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerSoloGenerate::canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool HttpHandlerSoloGenerate::canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
 
@@ -30,19 +30,19 @@ bool HttpHandlerSoloGenerate::canHandle(const std::string &sWorkerId, WSJCppLigh
 
 // ----------------------------------------------------------------------
 
-bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest) {
+bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) {
     std::string _tag = TAG + "-" + sWorkerId;
     std::string sRequestPath = pRequest->getRequestPath();
-    // WSJCppLog::warn(_tag, sRequestPath);
+    // WsjcppLog::warn(_tag, sRequestPath);
     
-    WSJCppLightWebHttpResponse resp(pRequest->getSockFd());
+    WsjcppLightWebHttpResponse resp(pRequest->getSockFd());
     if (sRequestPath != "/api/v1/solo-generate/" && sRequestPath != "/api/v1/solo-generate") {
         return false;
     }
 
     int nFilterMinFret = 0;
     int nFilterMaxFret = 24;
-    std::vector<WSJCppLightWebHttpRequestQueryValue> vQueries = pRequest->getRequestQueryParams();
+    std::vector<WsjcppLightWebHttpRequestQueryValue> vQueries = pRequest->getRequestQueryParams();
 
     int nFirstString = (std::rand() % 6) + 1;
     int nFirstFinger = (std::rand() % 5);
@@ -53,7 +53,7 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
         ::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE
     );
 
-    WSJCppLog::info(TAG, "start note: " + note.toPrintableString());
+    WsjcppLog::info(TAG, "start note: " + note.toPrintableString());
     SoloPartGuitar part;
     for (int i = 0; i < 16; i++) {
         std::vector<PositionNoteGuitar> vNotes = m_pMovementRules->findWithBegin(note);
@@ -62,7 +62,7 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
             GuitarSoloPartGenerateFilterBase *pFilter = m_vFilters[f];
             std::string sFilterName = pFilter->getName();
             for (int q = 0; q < vQueries.size(); q++) {
-                WSJCppLightWebHttpRequestQueryValue query = vQueries[q];
+                WsjcppLightWebHttpRequestQueryValue query = vQueries[q];
                 if (query.getName() == sFilterName) {
                     std::string sValue = query.getValue();
                     vNotes = pFilter->applyFilter(vNotes, sValue);
@@ -79,7 +79,7 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WSJCppLightWe
         } else {
             note = vNotes[std::rand() % vNotes.size()];
             part.addNote(note);
-            WSJCppLog::info(TAG, "note[" + std::to_string(i) + "] = " + note.toPrintableString());
+            WsjcppLog::info(TAG, "note[" + std::to_string(i) + "] = " + note.toPrintableString());
         }
     }
     nlohmann::json jsonResponse;

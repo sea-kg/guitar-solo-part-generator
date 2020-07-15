@@ -113,7 +113,7 @@ void GuitarSoloPartGeneratorMovementRules::applyPredefinedRules() {
     for (int i = 0; i < m_vPredefineRules.size(); i++) {
         std::string sPredefinedRule = m_vPredefineRules[i];
         if (!apply(sPredefinedRule, sError)) {
-            WSJCppLog::throw_err(TAG, sError);
+            WsjcppLog::throw_err(TAG, sError);
         }
     }
 }
@@ -139,7 +139,7 @@ bool GuitarSoloPartGeneratorMovementRules::apply(const std::string &sRule, std::
             sError = "Wrong match string";
             return false;
         }
-        WSJCppValidatorNumber validatorNumber;
+        WsjcppValidatorNumber validatorNumber;
         std::string sIgnoreError;
 
         std::string sBeginGuitarString = matches[1].str();
@@ -197,7 +197,7 @@ bool GuitarSoloPartGeneratorMovementRules::apply(const std::string &sRule, std::
                     continue;
                 }
 
-                /*WSJCppLog::warn(TAG, "Try exp "
+                /*WsjcppLog::warn(TAG, "Try exp "
                     "bBeginStringVar = " + std::string(bBeginStringVar ? "yes" : "no")
                     + " bEndStringExpr = " + std::string(bEndStringExpr ? "yes" : "no")
                     + " sEndGuitarString = " + sEndGuitarString
@@ -260,7 +260,7 @@ bool GuitarSoloPartGeneratorMovementRules::apply(const std::string &sRule, std::
 void GuitarSoloPartGeneratorMovementRules::add(const GuitarSoloPartGeneratorMovementRule &rule) {
     for (int i = 0; i < m_vRules.size(); i++) {
         if (rule == m_vRules[i]) {
-            WSJCppLog::warn(TAG, 
+            WsjcppLog::warn(TAG, 
                 "Skip rule " 
                 + rule.getPositionBegin().toPrintableString() 
                 + " -> "  + rule.getPositionEnd().toPrintableString()
@@ -331,7 +331,7 @@ bool GuitarSoloPartGeneratorMovementRules::replaceAndExecute(
     std::string &sError
 ) {
     std::string sExpr2 = replaceSubstring(sExpr, sVarName, std::to_string(nValue));
-    sExpr2 = WSJCppCore::trim(sExpr2);
+    sExpr2 = WsjcppCore::trim(sExpr2);
 
     std::string sErrorInfo = "'" + sExpr + "' -> '" + sExpr2 + "', var_name = '" + sVarName + "', var_value = '" + std::to_string(nValue) + "'";
     if (sExpr2 == sExpr) {

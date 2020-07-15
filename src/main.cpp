@@ -16,12 +16,12 @@ int main(int argc, const char* argv[]) {
     std::string TAG = "MAIN";
     std::string appName = std::string(WSJCPP_APP_NAME);
     std::string appVersion = std::string(WSJCPP_APP_VERSION);
-    WSJCppCore::initRandom();
-    if (!WSJCppCore::dirExists(".logs")) {
-        WSJCppCore::makeDir(".logs");
+    WsjcppCore::initRandom();
+    if (!WsjcppCore::dirExists(".logs")) {
+        WsjcppCore::makeDir(".logs");
     }
-    WSJCppLog::setPrefixLogFile("gspg");
-    WSJCppLog::setLogDirectory(".logs");
+    WsjcppLog::setPrefixLogFile("gspg");
+    WsjcppLog::setLogDirectory(".logs");
 
     GuitarSoloPartGeneratorMovementRules *pMovementRules = new GuitarSoloPartGeneratorMovementRules();
     pMovementRules->applyPredefinedRules();
@@ -39,28 +39,28 @@ int main(int argc, const char* argv[]) {
         // TODO refactor to like Employ settings
         int nPort = 1234;
         std::string sEnvPort;
-        if (WSJCppCore::getEnv("GSPG_PORT", sEnvPort)) {
-            WSJCppLog::info(TAG, "Your GSPG_PORT is: '" + sEnvPort + "'");
+        if (WsjcppCore::getEnv("GSPG_PORT", sEnvPort)) {
+            WsjcppLog::info(TAG, "Your GSPG_PORT is: '" + sEnvPort + "'");
             nPort = std::stoi(sEnvPort);
         } else {
-            WSJCppLog::info(TAG, "GSPG_PORT will be used by default:  '" + std::to_string(nPort) + "'");
+            WsjcppLog::info(TAG, "GSPG_PORT will be used by default:  '" + std::to_string(nPort) + "'");
         }
 
         // TODO validate port
         std::string sWebFolder = "./web";
-        if (WSJCppCore::getEnv("GSPG_WEB", sWebFolder)) {
-            WSJCppLog::info(TAG, "Your GSPG_WEB is: '" + sWebFolder + "'");
+        if (WsjcppCore::getEnv("GSPG_WEB", sWebFolder)) {
+            WsjcppLog::info(TAG, "Your GSPG_WEB is: '" + sWebFolder + "'");
         } else {
-            WSJCppLog::info(TAG, "GSPG_WEB will be used by default: '" + sWebFolder + "'");
+            WsjcppLog::info(TAG, "GSPG_WEB will be used by default: '" + sWebFolder + "'");
         }
 
-        WSJCppLightWebServer server;
+        WsjcppLightWebServer server;
         server.setPort(nPort);
         server.setMaxWorkers(2);
-        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerAvailableFilters(vFilters));
-        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerMovementRules(pMovementRules));
-        server.addHandler((WSJCppLightWebHttpHandlerBase *)new HttpHandlerSoloGenerate(pMovementRules, vFilters));
-        server.addHandler((WSJCppLightWebHttpHandlerBase *)new WSJCppLightWebHttpHandlerWebFolder("/", "./web"));
+        server.addHandler(new HttpHandlerAvailableFilters(vFilters));
+        server.addHandler(new HttpHandlerMovementRules(pMovementRules));
+        server.addHandler(new HttpHandlerSoloGenerate(pMovementRules, vFilters));
+        server.addHandler(new WsjcppLightWebHttpHandlerWebFolder("/", "./web"));
         server.startSync();
         return -1;
     }
@@ -80,19 +80,19 @@ int main(int argc, const char* argv[]) {
         ::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET
     );
 
-    WSJCppLog::info(TAG, "start note: " + note.toPrintableString());
+    WsjcppLog::info(TAG, "start note: " + note.toPrintableString());
     SoloPartGuitar part;
     part.addNote(note);
     for (int i = 0; i < 12; i++) {
         std::vector<PositionNoteGuitar> vNotes = pMovementRules->findWithBegin(note);
         std::cout << "Found possible note " << vNotes.size() << std::endl;
         if (vNotes.size() == 0) { // TODO come to no finger
-            WSJCppLog::err(TAG, "Not found");
+            WsjcppLog::err(TAG, "Not found");
             return -1;
         }
         note = vNotes[std::rand() % vNotes.size()];
         part.addNote(note);
-        WSJCppLog::info(TAG, "note[" + std::to_string(i) + "] = " + note.toPrintableString());
+        WsjcppLog::info(TAG, "note[" + std::to_string(i) + "] = " + note.toPrintableString());
     }
     std::cout << part.exportTabulatur() << std::endl;
 

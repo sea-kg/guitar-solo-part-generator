@@ -5,14 +5,14 @@
 #include "guitar_solo_part_generate_filters.h"
 #include "guitar_solo_part_generator_movement_rules.h"
 
-class HttpHandlerSoloGenerate : WSJCppLightWebHttpHandlerBase {
+class HttpHandlerSoloGenerate : public WsjcppLightWebHttpHandlerBase {
     public:
         HttpHandlerSoloGenerate(
             GuitarSoloPartGeneratorMovementRules *pMovementRules, 
             const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters
         );
-        virtual bool canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest);
-        virtual bool handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest);
+        virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) override;
+        virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) override;
 
     private:
         std::string TAG;

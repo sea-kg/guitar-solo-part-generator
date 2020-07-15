@@ -85,10 +85,10 @@ std::string GuitarSoloPartGeneratorFingerPosition::toPrintableString() {
 
 void GuitarSoloPartGeneratorFingerPosition::checkAndThrow() {
     if (m_nGuitarString < 0 || m_nGuitarString > 8) {
-        WSJCppLog::throw_err(TAG, "GuitarString must be in range 1..8");
+        WsjcppLog::throw_err(TAG, "GuitarString must be in range 1..8");
     }
     if (m_nFret < -1 || m_nFret > 24) {
-        WSJCppLog::throw_err(TAG, "Fret must be in range 0..24");
+        WsjcppLog::throw_err(TAG, "Fret must be in range 0..24");
     }
     if (
         m_nFinger != GuitarTouchFinger::GUITAR_NO_FINGER 
@@ -97,18 +97,18 @@ void GuitarSoloPartGeneratorFingerPosition::checkAndThrow() {
         && m_nFinger != GuitarTouchFinger::GUITAR_RING_FINGER
         && m_nFinger != GuitarTouchFinger::GUITAR_LITTLE_FINGER
     ) {
-        WSJCppLog::throw_err(TAG, "Finger must be in [GUITAR_NO_FINGER, GUITAR_INDEX_FINGER, GUITAR_MIDDLE_FINGER, GUITAR_RING_FINGER, GUITAR_LITTLE_FINGER]");
+        WsjcppLog::throw_err(TAG, "Finger must be in [GUITAR_NO_FINGER, GUITAR_INDEX_FINGER, GUITAR_MIDDLE_FINGER, GUITAR_RING_FINGER, GUITAR_LITTLE_FINGER]");
     }
     if (m_nFret == 0 && m_nFinger != GuitarTouchFinger::GUITAR_NO_FINGER) {
-        WSJCppLog::throw_err(TAG, "if fret == 0 then finger must be GUITAR_NO_FINGER");
+        WsjcppLog::throw_err(TAG, "if fret == 0 then finger must be GUITAR_NO_FINGER");
     }
     if (m_nFret == -1 && m_nFinger != GuitarTouchFinger::GUITAR_NO_FINGER) {
-        WSJCppLog::throw_err(TAG, "if fret == -1 then finger must be not GUITAR_NO_FINGER");
+        WsjcppLog::throw_err(TAG, "if fret == -1 then finger must be not GUITAR_NO_FINGER");
     }
     if (m_nFret > 0 && m_nFinger == GuitarTouchFinger::GUITAR_NO_FINGER) {
-        WSJCppLog::throw_err(TAG, "if fret != 0 then finger must be not GUITAR_NO_FINGER");
+        WsjcppLog::throw_err(TAG, "if fret != 0 then finger must be not GUITAR_NO_FINGER");
     }
     if (m_nGuitarString == 0 && m_nFinger != GuitarTouchFinger::GUITAR_NO_FINGER) {
-        WSJCppLog::throw_err(TAG, "if GuitarString == 0 then finger must be not GUITAR_NO_FINGER");
+        WsjcppLog::throw_err(TAG, "if GuitarString == 0 then finger must be not GUITAR_NO_FINGER");
     }
 }

@@ -8,7 +8,7 @@
 #include <deque>
 #include <iostream>
 
-class WSJCppCore {
+class WsjcppCore {
     public:
         static bool init(
             int argc, char** argv, 
@@ -34,12 +34,17 @@ class WSJCppCore {
         static bool dirExists(const std::string &sFilename);
         static bool fileExists(const std::string &sFilename);
         static std::vector<std::string> listOfDirs(const std::string &sDirname);
-        static std::vector<std::string> listOfFiles(const std::string &sDirname);     
+        static std::vector<std::string> getListOfDirs(const std::string &sDirname);
+        static std::vector<std::string> listOfFiles(const std::string &sDirname);
+        static std::vector<std::string> getListOfFiles(const std::string &sDirname);
         static bool makeDir(const std::string &sDirname);
         static bool writeFile(const std::string &sFilename, const std::string &sContent);
         static bool readTextFile(const std::string &sFilename, std::string &sOutputContent);
+        static bool readFileToBuffer(const std::string &sFilename, char *pBuffer[], int &nBufferSize);
         static bool writeFile(const std::string &sFilename, const char *pBuffer, const int nBufferSize);
         static bool removeFile(const std::string &sFilename);
+        static bool copyFile(const std::string &sSourceFilename, const std::string &sTargetFilename);
+
         static bool createEmptyFile(const std::string &sFilename);
 
         static std::string& ltrim(std::string& str, const std::string& chars = "\t\n\v\f\r ");
@@ -49,6 +54,7 @@ class WSJCppCore {
         static std::string toUpper(const std::string& str);
         static void replaceAll(std::string& str, const std::string& from, const std::string& to);
         static std::vector<std::string> split(const std::string& sWhat, const std::string& sDelim);
+        static std::string join(const std::vector<std::string> &vWhat, const std::string& sDelim);
 
         static void initRandom();
         static std::string createUuid();
@@ -61,13 +67,16 @@ class WSJCppCore {
         static std::string encodeUriComponent(const std::string& sValue);
         static std::string decodeUriComponent(const std::string& sValue);
 
-        
+        static std::string getHumanSizeBytes(long nBytes);
+
+        static bool recoursiveCopyFiles(const std::string& sSourceDir, const std::string& sTargetDir);
+        static bool recoursiveRemoveDir(const std::string& sDir);
 };
 
 
 // ---------------------------------------------------------------------
 
-enum WSJCppColorCode {
+enum WsjcppColorCode {
     FG_RED      = 31,
     FG_GREEN    = 32,
     FG_YELLOW   = 93,
@@ -81,27 +90,35 @@ enum WSJCppColorCode {
 
 // ---------------------------------------------------------------------
 
-class WSJCppColorModifier {
-    WSJCppColorCode code;
+class WsjcppColorModifier {
+    WsjcppColorCode code;
     public:
-        WSJCppColorModifier(WSJCppColorCode pCode) : code(pCode) {}
+        WsjcppColorModifier(WsjcppColorCode pCode) : code(pCode) {}
         friend std::ostream&
-        operator<<(std::ostream& os, const WSJCppColorModifier& mod) {
+        operator<<(std::ostream& os, const WsjcppColorModifier& mod) {
             return os << "\033[" << mod.code << "m";
         }
 };
 
 // ---------------------------------------------------------------------
 
-class WSJCppLog {
+class WsjcppLogGlobalConf {
     public:
-        static std::string g_WSJCPP_LOG_DIR;
-        static std::string g_WSJCPP_LOG_PREFIX_FILE;
-        static std::string g_WSJCPP_LOG_FILE;
-        static long g_WSJCPP_LOG_START_TIME;
-        static std::mutex * g_WSJCPP_LOG_MUTEX;
-        static std::deque<std::string> * g_WSJCPP_LOG_LAST_MESSAGES;
-        static void doLogRotateUpdateFilename(bool bForce = false);
+        WsjcppLogGlobalConf();
+        void doLogRotateUpdateFilename(bool bForce = false);
+        std::mutex logMutex;
+        std::string logDir;
+        std::string logPrefixFile;
+        std::string logFile;
+        bool enableLogFile;
+        long logStartTime;
+        long logRotationPeriodInSeconds;
+        std::deque<std::string> logLastMessages;
+};
+
+class WsjcppLog {
+    public:
+        static WsjcppLogGlobalConf g_WSJCPP_LOG_GLOBAL_CONF;
 
         static void info(const std::string &sTag, const std::string &sMessage);
         static void err(const std::string &sTag, const std::string &sMessage);
@@ -111,10 +128,11 @@ class WSJCppLog {
         static std::vector<std::string> getLastLogMessages();
         static void setLogDirectory(const std::string &sDirectoryPath);
         static void setPrefixLogFile(const std::string &sPrefixLogFile);
-        static void initGlobalVariables();
+        static void setEnableLogFile(bool bEnable);
+        static void setRotationPeriodInSec(long nRotationPeriodInSec);
 
     private:
-        static void add(WSJCppColorModifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage);
+        static void add(WsjcppColorModifier &clr, const std::string &sType, const std::string &sTag, const std::string &sMessage);
 };
 
 #endif // WSJCPP_CORE_H

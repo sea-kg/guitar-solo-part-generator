@@ -34,7 +34,7 @@ std::string GuitarSoloPartGenerateFilterBase::getDataTypeAsString() {
     } else if (m_nDataType == ::GSPG_FILTER_DATATYPE_CHECKBOX_LIST) {
         return "checkbox_list";
     } else {
-        WSJCppLog::throw_err(TAG, "Unknown datatype");
+        WsjcppLog::throw_err(TAG, "Unknown datatype");
     }
     return "";
 }
@@ -62,7 +62,7 @@ std::string GuitarSoloPartGenerateFilterBase::getDescription() {
 
 GuitarSoloPartGenerateFilterMinFret::GuitarSoloPartGenerateFilterMinFret()
 : GuitarSoloPartGenerateFilterBase("min_fret", ::GSPG_FILTER_DATATYPE_SELECT_LIST, "Min Fret", "Filter by minimal fret") {
-    WSJCppLog::info(TAG, "min_fret");
+    WsjcppLog::info(TAG, "min_fret");
     m_nFromFret = 0;
     m_nToFret = 24;
 }
@@ -101,7 +101,7 @@ std::vector<PositionNoteGuitar> GuitarSoloPartGenerateFilterMinFret::applyFilter
 
 GuitarSoloPartGenerateFilterMaxFret::GuitarSoloPartGenerateFilterMaxFret()
 : GuitarSoloPartGenerateFilterBase("max_fret", ::GSPG_FILTER_DATATYPE_SELECT_LIST, "Max Fret", "Filter by maximal fret") {
-    WSJCppLog::info(TAG, "");
+    WsjcppLog::info(TAG, "");
     m_nFromFret = 0;
     m_nToFret = 24;
 }

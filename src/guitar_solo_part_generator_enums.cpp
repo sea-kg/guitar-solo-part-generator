@@ -19,7 +19,7 @@ GuitarTouchFinger GuitarSoloPartGeneratorEnums::valueToFinger(const std::string 
     } else if (sValue == "little") {
         return GuitarTouchFinger::GUITAR_LITTLE_FINGER;
     }
-    WSJCppLog::warn(TAG, "Unknown type of finger '" + sValue + "' will be return default GuitarTouchFinger::GUITAR_NO_FINGER");
+    WsjcppLog::warn(TAG, "Unknown type of finger '" + sValue + "' will be return default GuitarTouchFinger::GUITAR_NO_FINGER");
     return GuitarTouchFinger::GUITAR_NO_FINGER;
 }
 
@@ -38,6 +38,6 @@ std::string GuitarSoloPartGeneratorEnums::fingerToValue(GuitarTouchFinger nFinge
     } else if (nFinger == GuitarTouchFinger::GUITAR_LITTLE_FINGER) {
         return "little";
     }
-    WSJCppLog::warn(TAG, "Unknown type of finger '" + std::to_string((int)nFinger) + "' will be return 'no'");
+    WsjcppLog::warn(TAG, "Unknown type of finger '" + std::to_string((int)nFinger) + "' will be return 'no'");
     return "no";
 }
