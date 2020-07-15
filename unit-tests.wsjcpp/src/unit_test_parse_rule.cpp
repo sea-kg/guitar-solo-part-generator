@@ -1,12 +1,12 @@
 #include "unit_test_parse_rule.h"
 #include <vector>
 #include <wsjcpp_core.h>
-#include "solo_part_guitar_rules.h"
+#include "guitar_solo_part_generator_movement_rules.h"
 
-REGISTRY_UNIT_TEST(UnitTestParseRule)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestParseRule)
 
 UnitTestParseRule::UnitTestParseRule()
-    : WSJCppUnitTestBase("UnitTestParseRule") {
+    : WsjcppUnitTestBase("UnitTestParseRule") {
 }
 
 // ---------------------------------------------------------------------
@@ -41,8 +41,8 @@ bool UnitTestParseRule::run() {
     for (int i = 0; i < tests.size(); i++) {
         LTest test = tests[i];
         std::string sError = "";
-        WSJCppLog::info(TAG, "Test rule: " + test.sRule + " -> " + std::to_string(test.nExpectedSize));
-        SoloPartGuitarRules rules;
+        WsjcppLog::info(TAG, "Test rule: " + test.sRule + " -> " + std::to_string(test.nExpectedSize));
+        GuitarSoloPartGeneratorMovementRules rules;
         bool bResult = rules.apply(test.sRule, sError);
         compareB(bTestSuccess, test.sRule + ", error: " + sError, bResult, true);
         compareN(bTestSuccess, test.sRule + ", rules size", rules.getSize(), test.nExpectedSize);

@@ -4,7 +4,7 @@
 #include <wsjcpp_unit_tests.h>
 
 // Description: TODO
-class UnitTestPositionNoteGuitar : public WSJCppUnitTestBase {
+class UnitTestPositionNoteGuitar : public WsjcppUnitTestBase {
     public:
         UnitTestPositionNoteGuitar();
         virtual void init();

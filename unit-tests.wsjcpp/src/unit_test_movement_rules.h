@@ -4,7 +4,7 @@
 #include <wsjcpp_unit_tests.h>
 
 // Description: TODO
-class UnitTestMovementRules : public WSJCppUnitTestBase {
+class UnitTestMovementRules : public WsjcppUnitTestBase {
     public:
         UnitTestMovementRules();
         virtual void init();

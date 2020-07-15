@@ -3,10 +3,10 @@
 #include <wsjcpp_core.h>
 #include <solo_part_guitar.h>
 
-REGISTRY_UNIT_TEST(UnitTestPositionNoteGuitar)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestPositionNoteGuitar)
 
 UnitTestPositionNoteGuitar::UnitTestPositionNoteGuitar()
-    : WSJCppUnitTestBase("UnitTestPositionNoteGuitar") {
+    : WsjcppUnitTestBase("UnitTestPositionNoteGuitar") {
 }
 
 // ---------------------------------------------------------------------
