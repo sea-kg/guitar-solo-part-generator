@@ -2,11 +2,12 @@
 #include <vector>
 #include <wsjcpp_core.h>
 #include "position_note_guitar.h"
+#include "guitar_solo_part_generator_enums.h"
 
-REGISTRY_UNIT_TEST(UnitTestNoteGuitarConverter)
+REGISTRY_WSJCPP_UNIT_TEST(UnitTestNoteGuitarConverter)
 
 UnitTestNoteGuitarConverter::UnitTestNoteGuitarConverter()
-    : WSJCppUnitTestBase("UnitTestNoteGuitarConverter") {
+    : WsjcppUnitTestBase("UnitTestNoteGuitarConverter") {
 }
 
 // ---------------------------------------------------------------------
@@ -40,8 +41,8 @@ bool UnitTestNoteGuitarConverter::run() {
         LTest test = tests[i];
         std::string sExpectedValue = test.sValue;
         GuitarTouchFinger nExpectedFinger = test.nFinger;
-        std::string sGotValue = NoteGuitarConverter::fingerToValue(nExpectedFinger);
-        GuitarTouchFinger nGotFinger = NoteGuitarConverter::valueToFinger(sExpectedValue);
+        std::string sGotValue = GuitarSoloPartGeneratorEnums::fingerToValue(nExpectedFinger);
+        GuitarTouchFinger nGotFinger = GuitarSoloPartGeneratorEnums::valueToFinger(sExpectedValue);
         compareS(
             bTestSuccess, 
             "Convert '" + std::to_string(nExpectedFinger) + "' -> '" + sExpectedValue + "'", 

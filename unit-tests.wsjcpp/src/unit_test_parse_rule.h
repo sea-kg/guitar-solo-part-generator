@@ -4,7 +4,7 @@
 #include <wsjcpp_unit_tests.h>
 
 // Description: TODO
-class UnitTestParseRule : public WSJCppUnitTestBase {
+class UnitTestParseRule : public WsjcppUnitTestBase {
     public:
         UnitTestParseRule();
         virtual void init();

@@ -2,18 +2,16 @@
 #define HTTP_HANDLER_AVAILABLE_FILTERS_H
 
 #include <wsjcpp_light_web_server.h>
-#include "solo_part_guitar_rules.h"
 #include "guitar_solo_part_generate_filters.h"
 
-class HttpHandlerAvailableFilters : WSJCppLightWebHttpHandlerBase {
+class HttpHandlerAvailableFilters : public WsjcppLightWebHttpHandlerBase {
     public:
-        HttpHandlerAvailableFilters(const SoloPartGuitarRules &rules, const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters);
-        virtual bool canHandle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest);
-        virtual bool handle(const std::string &sWorkerId, WSJCppLightWebHttpRequest *pRequest);
+        HttpHandlerAvailableFilters(const std::vector<GuitarSoloPartGenerateFilterBase *> &vFilters);
+        virtual bool canHandle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) override;
+        virtual bool handle(const std::string &sWorkerId, WsjcppLightWebHttpRequest *pRequest) override;
 
     private:
         std::string TAG;
-        SoloPartGuitarRules m_rules;
         std::vector<GuitarSoloPartGenerateFilterBase *> m_vFilters; 
 };
 #endif // HTTP_HANDLER_AVAILABLE_FILTERS_H

@@ -21,7 +21,8 @@ SoloPartGuitar::SoloPartGuitar() {
     m_vGuitarStartStringNotes.push_back("D3");
     m_vGuitarStartStringNotes.push_back("A2");
     m_vGuitarStartStringNotes.push_back("E2"); // 6 string
-    
+    m_vGuitarStartStringNotes.push_back("B1"); // 7 string
+    m_vGuitarStartStringNotes.push_back("F#1"); // 8 string
 }
 
 // ---------------------------------------------------------------------
@@ -102,6 +103,9 @@ nlohmann::json SoloPartGuitar::exportToJson() {
 
 std::string SoloPartGuitar::findNoteByPosition(const PositionNoteGuitar &note) {
     int nString = note.getGuitarString();
+    if (nString == 0) {
+        return "";
+    }
     std::string sPos0 = m_vGuitarStartStringNotes[nString-1];
     int nPos0 = -1;
     for (int i = 0; i < m_vAllNameOfNotes.size(); i++) {

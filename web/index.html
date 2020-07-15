@@ -21,7 +21,9 @@
       <div class="card-body">
         <pre id="tabulatur" style="display: none"></pre>
         <canvas id="_tabulatur" height="250px" width="850px"></canvas>
+
         <form class="form-inline">
+          <button type="button" onclick="generate()" class="gspg-button">Generate New Part</button>
           <div class="form-group mb-2">
             <input type="text" readonly class="form-control-plaintext" value="Instrument for play">
           </div>
@@ -46,7 +48,6 @@
     <br>
     <h3>Generation rules section</h3>
     <div id="filters"></div>
-  <button type="button" onclick="generate()" class="gspg-button">Generate</button>
   <h3></h3>
   <div class="card">
     <div class="card-header">
