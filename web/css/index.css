@@ -94,3 +94,28 @@
 .preambula-links a {
     margin-left: 25px;
 }
+
+.gspg-tabulatur-card {
+    border: 2px solid #dff9df;
+}
+
+.gspg-tabulatur-title {
+    border-bottom: 2px solid #dff9df;
+    font-size: 18px;
+    padding: 10px;
+    font-weight: bold;
+
+}
+
+.gspg-tabulatur-content {
+    padding: 20px;
+}
+
+.gspg-tabulatur-bottom {
+    border-top: 2px solid #dff9df;
+    padding: 10px;
+}
+
+.select-instrument {
+    display: inline-block;
+}

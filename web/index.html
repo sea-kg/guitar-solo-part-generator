@@ -27,34 +27,28 @@
         </div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-header">
-        Tabulatur
-      </div>
-      <div class="card-body">
+    <div class="gspg-tabulatur-card">
+      <div class="gspg-tabulatur-title">Tabulatur</div>
+      <div class="gspg-tabulatur-content">
         <pre id="tabulatur" style="display: none"></pre>
-        <canvas id="_tabulatur" height="250px" width="850px"></canvas>
+        
+        <div class="select-instrument">
+          Instrument for play: 
+          <select id="use_instrument">
+            <option value='guitar'>guitar</option>
+            <option value='piano'>piano</option>
+            <option value='bass'>bass</option>
+            <option value='trombone'>trombone</option>
+          </select>
+          <button type="button" onclick="play()" class="gspg-button">Play</button>
+          <button type="button" onclick="stop()" class="gspg-button">Stop</button>
+        </div>
+        <canvas class="gspg-tabulatur-image" id="_tabulatur" height="250px" width="850px"></canvas>
+      </div>
+      <div class="gspg-tabulatur-bottom">
+        <button type="button" onclick="generate()" class="gspg-button">Generate New Part</button>
 
-        <form class="form-inline">
-          <button type="button" onclick="generate()" class="gspg-button">Generate New Part</button>
-          <div class="form-group mb-2">
-            <input type="text" readonly class="form-control-plaintext" value="Instrument for play">
-          </div>
-          <div class="form-group mb-2">
-            <select id="use_instrument" class="form-control">
-              <option value='guitar'>guitar</option>
-              <option value='piano'>piano</option>
-              <option value='bass'>bass</option>
-              <option value='trombone'>trombone</option>
-            </select>
-          </div>
-          <div class="form-group mx-sm-3 mb-2">
-            <button type="button" onclick="play()" class="btn btn-danger">Play</button>
-          </div>
-          <div class="form-group mx-sm-3 mb-2">
-            <button type="button" onclick="stop()" class="btn btn-dark">Stop</button>
-          </div>
-        </form>
+        
         <div id="currentnote"></div>
       </div>
     </div>
