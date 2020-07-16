@@ -317,11 +317,11 @@ function appendFilterSelectList(_filter) {
         pre_val = _filter["values"][0]["value"]
     }
     var _content = ''
-        + '<div class="input-group mb-3">'
-        + '  <div class="input-group-prepend">'
-        + '    <label class="input-group-text">' + _filter["caption"] + '</label>'
+        + '<div class="gspg-filter-row">'
+        + '  <div class="gspg-filter-row-title">'
+        + '    ' + _filter["caption"]
         + '  </div>'
-        + '  <select class="custom-select gspg-filter" filter-name="' + name + '" id="filter_' + name + '" onchange="changedValueOfList(this)">'
+        + '  <select class="gspg-select-control" filter-name="' + name + '" id="filter_' + name + '" onchange="changedValueOfList(this)">'
     for (var i in _filter["values"]) {
         var _value = _filter["values"][i]["value"]
         var _caption = _filter["values"][i]["caption"]
@@ -377,8 +377,8 @@ function appendFilterCheckboxList(_filter) {
     console.log(checked_vals)
 
     var _content = ''
-        + '<div>'
-        + _filter['caption'] + ': ';
+        + '<div class="gspg-filter-row">'
+        + '   <div class="gspg-filter-row-title">' + _filter['caption'] + '</div>';
     for (var i in values) {
         var _value = values[i]["value"]
         var _caption = values[i]["caption"]

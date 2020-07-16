@@ -168,3 +168,23 @@
 .gspg-btn-stop:hover {
     transform: scale(1.1);
 }
+
+.gspg-filter-row {
+    border: 2px solid #dff9df;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.gspg-filter-row-title {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.gspg-select-control {
+    background-color: #ab0000;
+    color: #dff9df;
+    border: none;
+    padding: 5px;
+}
