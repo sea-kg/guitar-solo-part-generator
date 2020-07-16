@@ -8,14 +8,14 @@ function parsePageParams() {
 	for(var i = 0; i < arr.length; i++){
 		if(arr[i].trim() != ""){
 			var p = regex.exec(arr[i].trim());
-			console.log("results: " + JSON.stringify(p));
+			// console.log("results: " + JSON.stringify(p));
 			if(p == null)
 				result[decodeURIComponent(arr[i].trim().replace(/\+/g, " "))] = '';
 			else
 				result[decodeURIComponent(p[1].replace(/\+/g, " "))] = decodeURIComponent(p[2].replace(/\+/g, " "));
 		}
 	}
-	console.log(JSON.stringify(result));
+	// console.log(JSON.stringify(result));
 	return result;
 }
 
@@ -123,13 +123,22 @@ window.waves = createWaves(ac);
 
 function updateTabulaturNoteEnded(idx) {
     window.tabeditor.render(idx + 1);
+    if (idx + 1 >= window.tabeditor.data.length) {
+        document.getElementById('gspg_player_play').style.display = '';
+        document.getElementById('gspg_player_stop').style.display = 'none';
+    }
 }
 
 function addNote(_note, _time, _duration, _cleanuptime, idx) {
     console.log(_note)
     var note = {};
     note["time"] = _time;
-    note["frequency"] = getFrequencyOfNote(_note.note);
+    if (_note.note) {
+        note["frequency"] = getFrequencyOfNote(_note.note);
+    } else {
+        note["frequency"] = 0;
+    }
+    
     note["duration"] = _duration;
     note["velocity"] = 0.4;
     note["cleanuptime"] = _cleanuptime;
@@ -138,8 +147,12 @@ function addNote(_note, _time, _duration, _cleanuptime, idx) {
     var startTime = note.time;
     var releaseTime = startTime + note.duration;
     var attackTime = Math.min(releaseTime, startTime + timbre.attack);
-    var decayTime = timbre.decay *
-          Math.pow(440 / note.frequency, timbre.decayfollow);
+    
+    var decayTime = 0;
+    if (note.frequency > 0) {
+        decayTime = timbre.decay * Math.pow(440 / note.frequency, timbre.decayfollow);
+    }
+    
     var decayStartTime = attackTime;
     var stopTime = releaseTime + timbre.release;
     var doubled = timbre.detune && timbre.detune != 1.0;
@@ -271,7 +284,7 @@ function play() {
     }
 }
 
-// window.guitarTunings = ["E4", "B3", "G3", "D3", "A2", "E2"]
+// http://localhost:1234/?use_notes=C%7CC%23%7CD%7CD%23%7CG%7CB&use_strings=1%7C2%7C3%7C4&max_fret=11&min_fret=0&part=eyJndWl0YXJUdW5pbmciOlsiRTQiLCJCMyIsIkczIiwiRDMiLCJBMiIsIkUyIl0sInBhcnQiOlt7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibGl0dGxlIiwiZnJldCI6OSwibm90ZSI6IkMjNSIsInN0cmluZyI6MSwidGltZSI6IjAvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibm8iLCJmcmV0IjotMSwibm90ZSI6IiIsInN0cmluZyI6MCwidGltZSI6IjgvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibWlkZGxlIiwiZnJldCI6Nywibm90ZSI6IkQ0Iiwic3RyaW5nIjozLCJ0aW1lIjoiMTYvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoiaW5kZXgiLCJmcmV0Ijo2LCJub3RlIjoiQyM0Iiwic3RyaW5nIjozLCJ0aW1lIjoiMjQvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibm8iLCJmcmV0IjowLCJub3RlIjoiRzMiLCJzdHJpbmciOjMsInRpbWUiOiIzMi8zMiJ9LHsiZHVyYXRpb24iOiIxLzQiLCJmaW5nZXIiOiJpbmRleCIsImZyZXQiOjQsIm5vdGUiOiJCMyIsInN0cmluZyI6MywidGltZSI6IjQwLzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6ImxpdHRsZSIsImZyZXQiOjcsIm5vdGUiOiJENCIsInN0cmluZyI6MywidGltZSI6IjQ4LzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6ImluZGV4IiwiZnJldCI6NCwibm90ZSI6IkIzIiwic3RyaW5nIjozLCJ0aW1lIjoiNTYvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoicmluZyIsImZyZXQiOjYsIm5vdGUiOiJDIzQiLCJzdHJpbmciOjMsInRpbWUiOiI2NC8zMiJ9LHsiZHVyYXRpb24iOiIxLzQiLCJmaW5nZXIiOiJubyIsImZyZXQiOjAsIm5vdGUiOiJHMyIsInN0cmluZyI6MywidGltZSI6IjcyLzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6ImxpdHRsZSIsImZyZXQiOjgsIm5vdGUiOiJEIzQiLCJzdHJpbmciOjMsInRpbWUiOiI4MC8zMiJ9LHsiZHVyYXRpb24iOiIxLzQiLCJmaW5nZXIiOiJubyIsImZyZXQiOjAsIm5vdGUiOiJHMyIsInN0cmluZyI6MywidGltZSI6Ijg4LzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6ImxpdHRsZSIsImZyZXQiOjQsIm5vdGUiOiJCMyIsInN0cmluZyI6MywidGltZSI6Ijk2LzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6Im5vIiwiZnJldCI6MCwibm90ZSI6IkczIiwic3RyaW5nIjozLCJ0aW1lIjoiMTA0LzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6Im1pZGRsZSIsImZyZXQiOjYsIm5vdGUiOiJDIzQiLCJzdHJpbmciOjMsInRpbWUiOiIxMTIvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibWlkZGxlIiwiZnJldCI6NSwibm90ZSI6IkM0Iiwic3RyaW5nIjozLCJ0aW1lIjoiMTIwLzMyIn1dLCJ0YWJ1bGF0dXIiOiIxfEU0fC0tLTktLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbjJ8QjN8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuM3xHM3wtLS0tLS0tLS03LS02LS0wLS00LS03LS00LS02LS0wLS04LS0wLS00LS0wLS02LS01XG40fEQzfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbjV8QTJ8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuNnxFMnwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tXG5IQU5EfC0tLUwtLU4tLU0tLUktLU4tLUktLUwtLUktLVItLU4tLUwtLU4tLUwtLU4tLU0tLU1cbk4gLSBObyBmaW5nZXIgLyBlbXB0eSBzdHJpbmdcbkkgLSBJbmRleCBmaW5nZXJcbk0gLSBNaWRkbGUgZmluZ2VyXG5SIC0gUmluZyBmaW5nZXJcbkwgLSBMaXR0bGUgZmluZ2VyXG4ifQ%3D%3D
 
 function generate() {
     stop();
@@ -293,8 +306,9 @@ function generate() {
         $('#tabulatur').html(resp['tabulatur']);
         tabeditor.setGuitarTuning(resp["guitarTuning"]);
         tabeditor.updateData(resp["part"]);
-        console.log(tabeditor.sirealizeToString());
         tabeditor.render();
+        pageParams["part"] = btoa(JSON.stringify(resp));
+        changeLocationState(pageParams);
     }).fail(function(err){
         console.error(err)
         tabeditor.data = [];
@@ -335,7 +349,7 @@ function appendFilterSelectList(_filter) {
         // onchange="myFunction()"
     document.getElementById('filters').innerHTML += _content;
 }
-
+ 
 function changedValueOfCheckboxList(e) {
     var filter_name = e.getAttribute('filter-name')
     var newValue = !e.classList.contains("checked");
@@ -431,14 +445,6 @@ function initFilters(callback) {
     })
 }
 
-$(document).ready(function() {
-    window.tabeditor = new TabulaturEditor('_tabulatur')
-    initFilters(function() {
-        // generate();
-        testPart();
-    })
-})
-
 function testPart() {
     var test_part_resp = {
         "guitarTuning": ["E4", "B3", "G3", "D3", "A2", "E2"], // classic
@@ -448,15 +454,13 @@ function testPart() {
                 "duration": "1/8",
                 "finger":"index",
                 "fret":5,
-                "note":"E4", // can be calculated on play use a guitar tuning
                 "string":2
             }, 
             {
                 "time": "4/32",
-                "duration": "3/4",
+                "duration": "1/4",
                 "finger":"index",
                 "fret":5,
-                "note":"E4",
                 "string":2
             },
             {
@@ -464,7 +468,6 @@ function testPart() {
                 "duration":"1/8",
                 "finger":"middle",
                 "fret":5,
-                "note":"C4",
                 "string":3
             },
             {
@@ -472,7 +475,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"ring",
                 "fret":5,
-                "note":"A4",
                 "string":1
             },
             {
@@ -480,7 +482,6 @@ function testPart() {
                 "duration":"8/32",
                 "finger":"index",
                 "fret":2,
-                "note":"E3",
                 "string":4
             },
             {
@@ -488,7 +489,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"index",
                 "fret":3,
-                "note":"F3",
                 "string":4
             },
             {
@@ -496,7 +496,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"ring",
                 "fret":5,
-                "note":"G3",
                 "string":4
             },
             {
@@ -504,7 +503,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"index",
                 "fret":2,
-                "note":"E3",
                 "string":4
             },
             {
@@ -512,7 +510,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"middle",
                 "fret":3,
-                "note":"F3",
                 "string":4
             },
             {
@@ -520,7 +517,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"middle",
                 "fret":5,
-                "note":"G3",
                 "string":4
             },
             {
@@ -528,7 +524,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"middle",
                 "fret":7,
-                "note":"A3",
                 "string":4
             },
             {
@@ -536,7 +531,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"middle",
                 "fret":5,
-                "note":"G3",
                 "string":4
             },
             {
@@ -544,7 +538,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"no",
                 "fret":0,
-                "note":"D3",
                 "string":4
             },
             {
@@ -552,7 +545,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"index",
                 "fret":6,
-                "note":"F4",
                 "string":2
             },
             {
@@ -560,7 +552,6 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"index",
                 "fret":5,
-                "note":"E4",
                 "string":2
             },
             {
@@ -568,16 +559,31 @@ function testPart() {
                 "duration":"1/4",
                 "finger":"ring",
                 "fret":7,
-                "note":"A3",
                 "string":4
             }
         ],
         "tabulatur":""
     };
-    var t = btoa(JSON.stringify(test_part_resp));
-    console.log(t.length);
+    pageParams["part"] = btoa(JSON.stringify(test_part_resp));
+    changeLocationState(pageParams);
 
     tabeditor.setGuitarTuning(test_part_resp["guitarTuning"]);
     tabeditor.updateData(test_part_resp["part"]);
     tabeditor.render();
 }
+
+
+document.addEventListener('DOMContentLoaded', function(){ // Аналог $(document).ready(function(){
+    window.tabeditor = new TabulaturEditor('_tabulatur')
+    initFilters(function() {
+        // generate();
+        if (containsPageParam("part")) {
+            var part = JSON.parse(atob(pageParams["part"]));
+            tabeditor.setGuitarTuning(part["guitarTuning"]);
+            tabeditor.updateData(part["part"]);
+            tabeditor.render();
+        } else {
+            testPart();
+        }
+    })
+});

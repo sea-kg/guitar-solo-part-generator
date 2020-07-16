@@ -35,16 +35,6 @@ function TabulaturEditor(elementId) {
             }
         }
     }
-
-    self.sirealizeToString = function() {
-        var s = "[[" + self.guitarTunings.join(",") + "]";
-        for (var i = 0; i < self.data.length; i++) {
-            var note = self.data[i];
-            s += ",[" + note.finger.toUpperCase()[0] + "," + note.string + "," + note.fret + "," + note.duration + "]"
-        }
-        s += "]";
-        return s;
-    }
     
     self.normalizeDurationNote = function(durationText) {
         var r = durationText.split("/");
