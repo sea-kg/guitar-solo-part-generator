@@ -221,7 +221,6 @@ function addNote(_note, _time, _duration, _cleanuptime, idx) {
     osc.onended = function() { 
         // console.log(_note);
         updateTabulaturNoteEnded(idx);
-        // $('#currentnote').html(_note.note);
     };
     nodes.push(osc);
 
@@ -233,9 +232,7 @@ function addNote(_note, _time, _duration, _cleanuptime, idx) {
         o2.start(startTime);
         o2.stop(stopTime);
         o2.onended = function() { 
-            
             // console.log("o2", _note, idx);
-            // $('#currentnote').html(_note.note);
         };
         nodes.push(o2);
     }
@@ -284,6 +281,32 @@ function play() {
     }
 }
 
+function requestAjax(req) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+            if (xmlhttp.status == 200) {
+                req.done(xmlhttp.responseText);
+            } else {
+                req.fail(xmlhttp.responseText);
+            }
+        }
+    };
+    var reqUrl = req.url;
+    if (req.method == "GET" && req.data) {
+        var _params = []
+        for (var i in req.data) {
+            _params.push(encodeURIComponent(i) + "=" + encodeURIComponent(req.data[i]));
+        }
+        if (_params.length > 0) {
+            reqUrl += "?" + _params.join("&");
+        }
+    }
+    xmlhttp.open(req.method, reqUrl, true);
+    xmlhttp.send();
+}
+
+
 function generate() {
     stop();
     var filters = {}
@@ -294,21 +317,23 @@ function generate() {
             filters[filter_name] = pageParams[filter_name];
         }
     }
-
-    $.ajax({
+    requestAjax({
         url: "./api/v1/solo-generate",
         method: "GET",
-        data: filters
-    }).done(function(resp){
-        tabeditor.setGuitarTuning(resp["guitarTuning"]);
-        tabeditor.updateData(resp["part"]);
-        tabeditor.render();
-        pageParams["part"] = btoa(JSON.stringify(resp));
-        changeLocationState(pageParams);
-    }).fail(function(err){
-        console.error(err)
-        tabeditor.data = [];
-        tabeditor.render();
+        data: filters,
+        done: function(text){
+            var resp = JSON.parse(text);
+            tabeditor.setGuitarTuning(resp["guitarTuning"]);
+            tabeditor.updateData(resp["part"]);
+            tabeditor.render();
+            pageParams["part"] = btoa(JSON.stringify(resp));
+            changeLocationState(pageParams);
+        }, 
+        fail: function(err){
+            console.error(err)
+            tabeditor.data = [];
+            tabeditor.render();
+        }
     })
 }
 
@@ -426,17 +451,20 @@ window.available_filters = []
 
 function initFilters(callback) {
     document.getElementById('filters').innerHTML = "";
-    $.ajax({
+    requestAjax({
         url: "./api/v1/available-filters",
-        method: "GET"
-    }).done(function(resp){
-        window.available_filters = resp['result'];
-        applyAllowedFilters(resp);
-        if (callback) {
-            callback()
+        method: "GET",
+        done: function(text)  {
+            resp = JSON.parse(text);
+            window.available_filters = resp['result'];
+            applyAllowedFilters(resp);
+            if (callback) {
+                callback()
+            }
+        }, 
+        fail: function(err) {
+            console.error(err)
         }
-    }).fail(function(err){
-        console.error(err)
     })
 }
 
@@ -568,7 +596,7 @@ function testPart() {
 }
 
 
-document.addEventListener('DOMContentLoaded', function(){ // Аналог $(document).ready(function(){
+document.addEventListener('DOMContentLoaded', function(){
     window.tabeditor = new TabulaturEditor('_tabulatur')
     initFilters(function() {
         // generate();
