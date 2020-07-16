@@ -83,7 +83,6 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WsjcppLightWe
         }
     }
     nlohmann::json jsonResponse;
-    jsonResponse["tabulatur"] = part.exportTabulatur();
     jsonResponse["part"] = part.exportToJson();
     jsonResponse["guitarTuning"] = part.getGuitarTuning();
     

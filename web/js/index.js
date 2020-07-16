@@ -300,9 +300,6 @@ function generate() {
         method: "GET",
         data: filters
     }).done(function(resp){
-        // document.getElementById("tabulatur")
-        // console.log(JSON.stringify(resp));
-        // $('#tabulatur').html(resp['tabulatur']);
         tabeditor.setGuitarTuning(resp["guitarTuning"]);
         tabeditor.updateData(resp["part"]);
         tabeditor.render();
@@ -312,7 +309,6 @@ function generate() {
         console.error(err)
         tabeditor.data = [];
         tabeditor.render();
-        $('#tabulatur').html(err.statusText);
     })
 }
 
