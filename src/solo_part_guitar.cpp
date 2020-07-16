@@ -15,14 +15,14 @@ SoloPartGuitar::SoloPartGuitar() {
         }
     }
 
-    m_vGuitarStartStringNotes.push_back("E4"); // 1 string
-    m_vGuitarStartStringNotes.push_back("B3");
-    m_vGuitarStartStringNotes.push_back("G3");
-    m_vGuitarStartStringNotes.push_back("D3");
-    m_vGuitarStartStringNotes.push_back("A2");
-    m_vGuitarStartStringNotes.push_back("E2"); // 6 string
-    m_vGuitarStartStringNotes.push_back("B1"); // 7 string
-    m_vGuitarStartStringNotes.push_back("F#1"); // 8 string
+    m_vGuitarTuning.push_back("E4"); // 1 string
+    m_vGuitarTuning.push_back("B3");
+    m_vGuitarTuning.push_back("G3");
+    m_vGuitarTuning.push_back("D3");
+    m_vGuitarTuning.push_back("A2");
+    m_vGuitarTuning.push_back("E2"); // 6 string
+    // m_vGuitarTuning.push_back("B1"); // 7 string
+    // m_vGuitarTuning.push_back("F#1"); // 8 string
 }
 
 // ---------------------------------------------------------------------
@@ -89,14 +89,21 @@ nlohmann::json SoloPartGuitar::exportToJson() {
     for (int i = 0; i < m_vNotes.size(); i++) {
         PositionNoteGuitar note = m_vNotes[i];
         nlohmann::json jsonNote;
+        jsonNote["time"] = std::to_string(i * 8) + "/32"; // TODO hardcode
         jsonNote["string"] = note.getGuitarString();
         jsonNote["fret"] = note.getFret();
         jsonNote["finger"] = GuitarSoloPartGeneratorEnums::fingerToValue(note.getFinger());
-        jsonNote["duration"] = note.getDuration();
+        jsonNote["duration"] = "1/4"; // TODO hardcode
         jsonNote["note"] = findNoteByPosition(note);
         json.push_back(jsonNote);
     }
     return json;
+}
+
+// ---------------------------------------------------------------------
+
+std::vector<std::string> SoloPartGuitar::getGuitarTuning() {
+    return m_vGuitarTuning;
 }
 
 // ---------------------------------------------------------------------
@@ -106,7 +113,7 @@ std::string SoloPartGuitar::findNoteByPosition(const PositionNoteGuitar &note) {
     if (nString == 0) {
         return "";
     }
-    std::string sPos0 = m_vGuitarStartStringNotes[nString-1];
+    std::string sPos0 = m_vGuitarTuning[nString-1];
     int nPos0 = -1;
     for (int i = 0; i < m_vAllNameOfNotes.size(); i++) {
         if (m_vAllNameOfNotes[i] == sPos0) {

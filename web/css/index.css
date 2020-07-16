@@ -1,12 +1,12 @@
 
 
 /* The container */
-.checkbox-container {
+.gspg-checkbox-container {
     display: inline-block;
     padding-left: 5px;
     padding-right: 5px;
     border-radius: 5px;
-    width: 60px;
+    width: 40px;
     height: 25px;
     text-align: center;
     margin-bottom: 12px;
@@ -22,17 +22,40 @@
     margin-left: 10px;
     border-width: 1px;
     border-style: solid;
-    border-color: #b1b6F3;
+    border-color: #ad0000;
+    height: 50px;
+    line-height: 25px;
+    font-weight: bold;
 }
 
-.checkbox-container.checked {
-    background-image: url("../img/check.png");
-    padding-left: 30px;
-    background-color: #b1b6F3;
+.gspg-checkbox-container.checked {
+    background-color: #ad0000;
+    color: #dff9df;
+}
+
+.gspg-checkbox-check {
+    height: 25px;
+    background-image: url("../img/gspg-unchecked.png");
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.gspg-checkbox-check.checked {
+    height: 25px;
+    background-image: url("../img/gspg-checked.png");
+}
+
+.gspg-checkbox-caption {
+    height: 25px;
+}
+
+.gspg-container {
+    margin: auto;
+    max-width: 890px;
 }
 
 .gspg-button {
-    background-color: #f44336;
+    background-color: #ad0000;
     color: white;
     border-width: 1px;
     border-style: solid;
@@ -44,5 +67,124 @@
 
 .gspg-button:hover {
     background-color: #f47f36;
+}
 
+.preambula {
+    display: table;
+    height: 100px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.preambula-row {
+    display: table-row;
+    height: 100px;
+}
+
+.preambula-cell-logo {
+    display: table-cell;
+    height: 100px;
+    width: 100px;
+    background-image: url("../img/gspg-logo.png");
+    background-size: 100px 100px;
+    min-width: 100px;
+    max-width: 100px;
+}
+
+.preambula-cell-description {
+    display: table-cell;
+    height: 100px;
+    width: 100%;
+}
+
+.preambula-text {
+    display: block;
+    height: 75px;
+    line-height: 75px;
+    font-size: 42px;
+    padding-left: 25px;
+}
+
+.preambula-links {
+    display: block;
+    height: 25px;
+}
+
+.preambula-links a {
+    margin-left: 25px;
+}
+
+.gspg-tabulatur-card {
+    border: 2px solid #dff9df;
+}
+
+.gspg-tabulatur-title {
+    border-bottom: 2px solid #dff9df;
+    font-size: 18px;
+    padding: 10px;
+    font-weight: bold;
+
+}
+
+.gspg-tabulatur-content {
+    padding: 20px;
+}
+
+.gspg-tabulatur-bottom {
+    border-top: 2px solid #dff9df;
+    padding: 10px;
+}
+
+.gspg-player {
+    display: block;
+    border: 2px solid #dff9df;
+    padding: 10px;
+}
+
+.gspg-btn-play {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-image: url("../img/gspg-play.png");
+    background-size: 50px 50px;
+    cursor: pointer;
+}
+
+.gspg-btn-play:hover {
+    transform: scale(1.1);
+}
+
+.gspg-btn-stop {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-image: url("../img/gspg-stop.png");
+    background-size: 50px 50px;
+    cursor: pointer;
+}
+
+.gspg-btn-stop:hover {
+    transform: scale(1.1);
+}
+
+.gspg-filter-row {
+    border: 2px solid #dff9df;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.gspg-filter-row-title {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 12px;
+    margin-left: 10px;
+}
+
+.gspg-select-control {
+    background-color: #ab0000;
+    color: #dff9df;
+    border: none;
+    padding: 5px;
 }

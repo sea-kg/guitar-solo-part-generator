@@ -3,45 +3,38 @@
 <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="./css/bootstrap-4.4.1.min.css"/>
     <link rel="stylesheet" href="./css/index.css"/>
-    <script src="./js/jquery-3.4.1.min.js"></script>
-    <script src="./js/popper-1.14.6-umd.min.js"></script>
-    <script src="./js/bootstrap-4.4.1.min.js"></script>
     <script src="./js/TabulaturEditor.js"></script>
     <script src="./js/createWaves.js"></script>
     <script src="./js/index.js"></script>
 </head>
-<body class="container">
-    <h1>Solo Guitar Generator</h1>    
-    <div class="card">
-      <div class="card-header">
-        Tabulatur
+<body class="gspg-container">
+    <div class="preambula">
+      <div class="preambula-row">
+        <div class="preambula-cell-logo"></div>
+        <div class="preambula-cell-description">
+          <div class="preambula-text">Guitar Solo Part Generator</div>
+          <div class="preambula-links">
+            <a href="https://github.com/sea-kg/guitar-solo-part-generator/blob/master/API.md" target="_blank">API</a>
+            <a href="https://github.com/sea-kg/guitar-solo-part-generator" target="_blank">Source Code</a>
+            <a href="https://hub.docker.com/r/sea5kg/guitar-solo-part-generator" target="_blank">Docker</a>
+            <a href="https://sea-kg.com/guitar-solo-part-generator/" target="_blank">Demo</a>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <pre id="tabulatur" style="display: none"></pre>
-        <canvas id="_tabulatur" height="250px" width="850px"></canvas>
-
-        <form class="form-inline">
-          <button type="button" onclick="generate()" class="gspg-button">Generate New Part</button>
-          <div class="form-group mb-2">
-            <input type="text" readonly class="form-control-plaintext" value="Instrument for play">
-          </div>
-          <div class="form-group mb-2">
-            <select id="use_instrument" class="form-control">
-              <option value='guitar'>guitar</option>
-              <option value='piano'>piano</option>
-              <option value='bass'>bass</option>
-              <option value='trombone'>trombone</option>
-            </select>
-          </div>
-          <div class="form-group mx-sm-3 mb-2">
-            <button type="button" onclick="play()" class="btn btn-danger">Play</button>
-          </div>
-          <div class="form-group mx-sm-3 mb-2">
-            <button type="button" onclick="stop()" class="btn btn-dark">Stop</button>
-          </div>
-        </form>
+    </div>
+    <div class="gspg-tabulatur-card">
+      <div class="gspg-tabulatur-title">Tabulatur</div>
+      <div class="gspg-tabulatur-content">
+        <div class="gspg-player">
+          <div onclick="play()" id="gspg_player_play" class="gspg-btn-play"></div>
+          <div onclick="stop()" id="gspg_player_stop" class="gspg-btn-stop" style="display: none;"></div>
+        </div>
+        <canvas class="gspg-tabulatur-image" id="_tabulatur" height="250px" width="850px"></canvas>
+      </div>
+      <div class="gspg-tabulatur-bottom">
+        <button type="button" onclick="generate()" class="gspg-button">Generate New Part</button>
+        <button type="button" onclick="testPart()" class="gspg-button">Test Part</button>
         <div id="currentnote"></div>
       </div>
     </div>
@@ -49,42 +42,6 @@
     <h3>Generation rules section</h3>
     <div id="filters"></div>
   <h3></h3>
-  <div class="card">
-    <div class="card-header">
-      API
-    </div>
-    <div class="card-body">
-      Available Filters:
-      <p>
-      <a href="https://sea-kg.com/guitar-solo-part-generator/api/v1/available-filters/" target="_blank">https://sea-kg.com/guitar-solo-part-generator/api/v1/available-filters/</a>
-      </p>
-      Solo Generate:
-      <p>
-      <a href="https://sea-kg.com/guitar-solo-part-generator/api/v1/solo-generate/?min_fret=0" target="_blank">https://sea-kg.com/guitar-solo-part-generator/api/v1/solo-generate/?min_fret=0</a>
-      </p>
-      Filters must be in GET-parameters
-    </div>
-  </div>
-  <br>
-  <div class="card">
-    <div class="card-header">
-      Distribution
-    </div>
-    <div class="card-body">
-      Source Code:
-      <p>
-      <a href="https://github.com/sea-kg/guitar-solo-part-generator" target="_blank">https://github.com/sea-kg/guitar-solo-part-generator</a>
-      </p>
-      Docker:
-      <p>
-      <a href="https://hub.docker.com/r/sea5kg/guitar-solo-part-generator" target="_blank">https://hub.docker.com/r/sea5kg/guitar-solo-part-generator</a>
-      </p>
-      Demo:
-      <p>
-      <a href="https://sea-kg.com/guitar-solo-part-generator/" target="_blank">https://sea-kg.com/guitar-solo-part-generator/</a>
-      </p>
-    </div>
-  </div>
 </div>
 <br>
 </body>

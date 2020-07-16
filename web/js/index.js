@@ -8,14 +8,14 @@ function parsePageParams() {
 	for(var i = 0; i < arr.length; i++){
 		if(arr[i].trim() != ""){
 			var p = regex.exec(arr[i].trim());
-			console.log("results: " + JSON.stringify(p));
+			// console.log("results: " + JSON.stringify(p));
 			if(p == null)
 				result[decodeURIComponent(arr[i].trim().replace(/\+/g, " "))] = '';
 			else
 				result[decodeURIComponent(p[1].replace(/\+/g, " "))] = decodeURIComponent(p[2].replace(/\+/g, " "));
 		}
 	}
-	console.log(JSON.stringify(result));
+	// console.log(JSON.stringify(result));
 	return result;
 }
 
@@ -31,7 +31,7 @@ function changeLocationState(newPageParams) {
 	var url = '';
 	var params = [];
 	// console.log("changeLocationState");
-	console.log("changeLocationState, newPageParams = ", newPageParams);
+	// console.log("changeLocationState, newPageParams = ", newPageParams);
 	for(var p in newPageParams){
 		params.push(encodeURIComponent(p) + "=" + encodeURIComponent(newPageParams[p]));
 	}
@@ -122,15 +122,23 @@ window.waves = createWaves(ac);
 //
 
 function updateTabulaturNoteEnded(idx) {
-    window.tabeditor.render();
-    renderTabulatur("_tabulatur", window.guitarTunings, idx + 1);
+    window.tabeditor.render(idx + 1);
+    if (idx + 1 >= window.tabeditor.data.length) {
+        document.getElementById('gspg_player_play').style.display = '';
+        document.getElementById('gspg_player_stop').style.display = 'none';
+    }
 }
 
 function addNote(_note, _time, _duration, _cleanuptime, idx) {
-    console.log(_note)
+    // console.log(_note)
     var note = {};
     note["time"] = _time;
-    note["frequency"] = getFrequencyOfNote(_note.note);
+    if (_note.note) {
+        note["frequency"] = getFrequencyOfNote(_note.note);
+    } else {
+        note["frequency"] = 0;
+    }
+    
     note["duration"] = _duration;
     note["velocity"] = 0.4;
     note["cleanuptime"] = _cleanuptime;
@@ -139,8 +147,12 @@ function addNote(_note, _time, _duration, _cleanuptime, idx) {
     var startTime = note.time;
     var releaseTime = startTime + note.duration;
     var attackTime = Math.min(releaseTime, startTime + timbre.attack);
-    var decayTime = timbre.decay *
-          Math.pow(440 / note.frequency, timbre.decayfollow);
+    
+    var decayTime = 0;
+    if (note.frequency > 0) {
+        decayTime = timbre.decay * Math.pow(440 / note.frequency, timbre.decayfollow);
+    }
+    
     var decayStartTime = attackTime;
     var stopTime = releaseTime + timbre.release;
     var doubled = timbre.detune && timbre.detune != 1.0;
@@ -204,12 +216,11 @@ function addNote(_note, _time, _duration, _cleanuptime, idx) {
     osc.setPeriodicWave(pwave);
     osc.connect(filter);
     osc.start(startTime);
-    console.log("start ", startTime);
+    // console.log("start ", startTime);
     osc.stop(stopTime);
     osc.onended = function() { 
         // console.log(_note);
         updateTabulaturNoteEnded(idx);
-        // $('#currentnote').html(_note.note);
     };
     nodes.push(osc);
 
@@ -221,9 +232,7 @@ function addNote(_note, _time, _duration, _cleanuptime, idx) {
         o2.start(startTime);
         o2.stop(stopTime);
         o2.onended = function() { 
-            
             // console.log("o2", _note, idx);
-            // $('#currentnote').html(_note.note);
         };
         nodes.push(o2);
     }
@@ -236,10 +245,19 @@ function stop() {
     }
     nodes = []
     window.ac.close();
+    document.getElementById('gspg_player_play').style.display = '';
+    document.getElementById('gspg_player_stop').style.display = 'none';
+}
+
+function toTime(timeStr, timeOneTick) {
+    var r = timeStr.split("/");
+    return timeOneTick * parseInt(r[0], 10) / parseInt(r[1], 10);
 }
 
 function play() {
     stop();
+    document.getElementById('gspg_player_play').style.display = 'none';
+    document.getElementById('gspg_player_stop').style.display = '';
 
     updateTabulaturNoteEnded(-1);
 
@@ -251,15 +269,43 @@ function play() {
     dcn.connect(ac.destination);
     window.out = ac.createGain();
     window.out.connect(dcn);
-
-    var intrument = $('#use_instrument').val();
-    window.wave = waves[intrument];
-    for (var i = 0; i < window.soloData.length; i++) {
-        addNote(window.soloData[i], i*0.3, 0.25, i*0.3, i);
-    }  
+    var _timeOneTick = 1.2; // speed 
+    var _timeStart = 0;
+    window.wave = waves['guitar'];
+    for (var i = 0; i < window.tabeditor.data.length; i++) {
+        var n = window.tabeditor.data[i];
+        _timeStart = toTime(n.time, _timeOneTick);
+        var _duration = toTime(n.duration, _timeOneTick) - 0.05;
+        var idx = i;
+        addNote(window.tabeditor.data[i], _timeStart, _duration, _timeStart, idx);
+    }
 }
 
-window.guitarTunings = ["E4", "B3", "G3", "D3", "A2", "E2"]
+function requestAjax(req) {
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (xmlhttp.readyState == XMLHttpRequest.DONE) {   // XMLHttpRequest.DONE == 4
+            if (xmlhttp.status == 200) {
+                req.done(xmlhttp.responseText);
+            } else {
+                req.fail(xmlhttp.responseText);
+            }
+        }
+    };
+    var reqUrl = req.url;
+    if (req.method == "GET" && req.data) {
+        var _params = []
+        for (var i in req.data) {
+            _params.push(encodeURIComponent(i) + "=" + encodeURIComponent(req.data[i]));
+        }
+        if (_params.length > 0) {
+            reqUrl += "?" + _params.join("&");
+        }
+    }
+    xmlhttp.open(req.method, reqUrl, true);
+    xmlhttp.send();
+}
+
 
 function generate() {
     stop();
@@ -271,25 +317,23 @@ function generate() {
             filters[filter_name] = pageParams[filter_name];
         }
     }
-
-    $.ajax({
+    requestAjax({
         url: "./api/v1/solo-generate",
         method: "GET",
-        data: filters
-    }).done(function(resp){
-        $('#tabulatur').html(resp['tabulatur']);
-        window.soloData = resp["part"];
-        tabeditor.updateData(resp["part"]);
-        console.log(tabeditor.sirealizeToString());
-        window.tabeditor.render();
-        renderTabulatur("_tabulatur", window.guitarTunings)
-        console.log(window.soloData)
-    }).fail(function(err){
-        console.error(err)
-        window.soloData = [];
-        window.tabeditor.render();
-        renderTabulatur("_tabulatur", window.guitarTunings)
-        $('#tabulatur').html(err.statusText);
+        data: filters,
+        done: function(text){
+            var resp = JSON.parse(text);
+            tabeditor.setGuitarTuning(resp["guitarTuning"]);
+            tabeditor.updateData(resp["part"]);
+            tabeditor.render();
+            pageParams["part"] = btoa(JSON.stringify(resp));
+            changeLocationState(pageParams);
+        }, 
+        fail: function(err){
+            console.error(err)
+            tabeditor.data = [];
+            tabeditor.render();
+        }
     })
 }
 
@@ -308,11 +352,11 @@ function appendFilterSelectList(_filter) {
         pre_val = _filter["values"][0]["value"]
     }
     var _content = ''
-        + '<div class="input-group mb-3">'
-        + '  <div class="input-group-prepend">'
-        + '    <label class="input-group-text">' + _filter["caption"] + '</label>'
+        + '<div class="gspg-filter-row">'
+        + '  <div class="gspg-filter-row-title">'
+        + '    ' + _filter["caption"]
         + '  </div>'
-        + '  <select class="custom-select gspg-filter" filter-name="' + name + '" id="filter_' + name + '" onchange="changedValueOfList(this)">'
+        + '  <select class="gspg-select-control" filter-name="' + name + '" id="filter_' + name + '" onchange="changedValueOfList(this)">'
     for (var i in _filter["values"]) {
         var _value = _filter["values"][i]["value"]
         var _caption = _filter["values"][i]["caption"]
@@ -325,16 +369,19 @@ function appendFilterSelectList(_filter) {
         // onchange="myFunction()"
     document.getElementById('filters').innerHTML += _content;
 }
-
+ 
 function changedValueOfCheckboxList(e) {
     var filter_name = e.getAttribute('filter-name')
-    
-    if (e.classList.contains("checked")) {
-        e.classList.remove("checked");
-    } else {
+    var newValue = !e.classList.contains("checked");
+    if (newValue) {
         e.classList.add("checked");
+        e.getElementsByClassName('gspg-checkbox-check')[0].classList.add("checked");
+    } else {
+        e.classList.remove("checked");
+        e.getElementsByClassName('gspg-checkbox-check')[0].classList.remove("checked");
     }
-    var fields = document.getElementsByClassName('checkbox-container');
+
+    var fields = document.getElementsByClassName('gspg-checkbox-container');
     var values = []
     for (var i = 0; i < fields.length; i ++) {
         var field = fields[i]
@@ -362,11 +409,11 @@ function appendFilterCheckboxList(_filter) {
             }
         }
     }
-    console.log(checked_vals)
+    // console.log(checked_vals)
 
     var _content = ''
-        + '<div>'
-        + _filter['caption'] + ': ';
+        + '<div class="gspg-filter-row">'
+        + '   <div class="gspg-filter-row-title">' + _filter['caption'] + '</div>';
     for (var i in values) {
         var _value = values[i]["value"]
         var _caption = values[i]["caption"]
@@ -377,11 +424,11 @@ function appendFilterCheckboxList(_filter) {
             _checked = ''
         }
         _content += ''
-            + '<div class="checkbox-container ' + _checked + '" '
+            + '<div class="gspg-checkbox-container ' + _checked + '" '
             + ' filter-name="' + name + '" '
             + ' filter-value="' + _value + '" '
             + ' onclick="changedValueOfCheckboxList(this)"'
-            + '>' + _caption + '</div>';
+            + '><div class="gspg-checkbox-check ' + _checked + '"></div><div class="gspg-checkbox-caption">' + _caption + '</div></div>';
     }
     _content += '</div>';
     document.getElementById('filters').innerHTML += _content;
@@ -404,23 +451,162 @@ window.available_filters = []
 
 function initFilters(callback) {
     document.getElementById('filters').innerHTML = "";
-    $.ajax({
+    requestAjax({
         url: "./api/v1/available-filters",
-        method: "GET"
-    }).done(function(resp){
-        window.available_filters = resp['result'];
-        applyAllowedFilters(resp);
-        if (callback) {
-            callback()
+        method: "GET",
+        done: function(text)  {
+            resp = JSON.parse(text);
+            window.available_filters = resp['result'];
+            applyAllowedFilters(resp);
+            if (callback) {
+                callback()
+            }
+        }, 
+        fail: function(err) {
+            console.error(err)
         }
-    }).fail(function(err){
-        console.error(err)
     })
 }
 
-$(document).ready(function() {
+function testPart() {
+    var test_part_resp = {
+        "guitarTuning": ["E4", "B3", "G3", "D3", "A2", "E2"], // classic
+        "part":[
+            {
+                "time": "0/32",
+                "duration": "1/8",
+                "finger":"index",
+                "fret":5,
+                "string":2
+            }, 
+            {
+                "time": "4/32",
+                "duration": "1/4",
+                "finger":"index",
+                "fret":5,
+                "string":2
+            },
+            {
+                "time": "20/32",
+                "duration":"1/8",
+                "finger":"middle",
+                "fret":5,
+                "string":3
+            },
+            {
+                "time": "24/32",
+                "duration":"1/4",
+                "finger":"ring",
+                "fret":5,
+                "string":1
+            },
+            {
+                "time": "32/32",
+                "duration":"8/32",
+                "finger":"index",
+                "fret":2,
+                "string":4
+            },
+            {
+                "time": "40/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":3,
+                "string":4
+            },
+            {
+                "time": "48/32",
+                "duration":"1/4",
+                "finger":"ring",
+                "fret":5,
+                "string":4
+            },
+            {
+                "time": "56/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":2,
+                "string":4
+            },
+            {
+                "time": "64/32",
+                "duration":"1/4",
+                "finger":"middle",
+                "fret":3,
+                "string":4
+            },
+            {
+                "time": "72/32",
+                "duration":"1/4",
+                "finger":"middle",
+                "fret":5,
+                "string":4
+            },
+            {
+                "time": "80/32",
+                "duration":"1/4",
+                "finger":"middle",
+                "fret":7,
+                "string":4
+            },
+            {
+                "time": "88/32",
+                "duration":"1/4",
+                "finger":"middle",
+                "fret":5,
+                "string":4
+            },
+            {
+                "time": "96/32",
+                "duration":"1/4",
+                "finger":"no",
+                "fret":0,
+                "string":4
+            },
+            {
+                "time": "104/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":6,
+                "string":2
+            },
+            {
+                "time": "112/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":5,
+                "string":2
+            },
+            {
+                "time": "120/32",
+                "duration":"1/4",
+                "finger":"ring",
+                "fret":7,
+                "string":4
+            }
+        ],
+        "tabulatur":""
+    };
+    pageParams["part"] = btoa(JSON.stringify(test_part_resp));
+    changeLocationState(pageParams);
+
+    tabeditor.setGuitarTuning(test_part_resp["guitarTuning"]);
+    tabeditor.updateData(test_part_resp["part"]);
+    tabeditor.render();
+}
+
+
+document.addEventListener('DOMContentLoaded', function(){
     window.tabeditor = new TabulaturEditor('_tabulatur')
     initFilters(function() {
-        generate();
+        // generate();
+        if (containsPageParam("part")) {
+            var part = JSON.parse(atob(pageParams["part"]));
+            tabeditor.setGuitarTuning(part["guitarTuning"]);
+            tabeditor.updateData(part["part"]);
+            tabeditor.render();
+        } else {
+            testPart();
+        }
     })
-})
+});
