@@ -89,10 +89,11 @@ nlohmann::json SoloPartGuitar::exportToJson() {
     for (int i = 0; i < m_vNotes.size(); i++) {
         PositionNoteGuitar note = m_vNotes[i];
         nlohmann::json jsonNote;
+        jsonNote["time"] = std::to_string(i * 8) + "/32"; // TODO hardcode
         jsonNote["string"] = note.getGuitarString();
         jsonNote["fret"] = note.getFret();
         jsonNote["finger"] = GuitarSoloPartGeneratorEnums::fingerToValue(note.getFinger());
-        jsonNote["duration"] = note.getDuration();
+        jsonNote["duration"] = "1/4"; // TODO hardcode
         jsonNote["note"] = findNoteByPosition(note);
         json.push_back(jsonNote);
     }

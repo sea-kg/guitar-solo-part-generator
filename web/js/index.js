@@ -122,8 +122,7 @@ window.waves = createWaves(ac);
 //
 
 function updateTabulaturNoteEnded(idx) {
-    window.tabeditor.render();
-    renderTabulatur("_tabulatur", window.guitarTunings, idx + 1);
+    window.tabeditor.render(idx + 1);
 }
 
 function addNote(_note, _time, _duration, _cleanuptime, idx) {
@@ -240,6 +239,11 @@ function stop() {
     document.getElementById('gspg_player_stop').style.display = 'none';
 }
 
+function toTime(timeStr, timeOneTick) {
+    var r = timeStr.split("/");
+    return timeOneTick * parseInt(r[0], 10) / parseInt(r[1], 10);
+}
+
 function play() {
     stop();
     document.getElementById('gspg_player_play').style.display = 'none';
@@ -255,14 +259,19 @@ function play() {
     dcn.connect(ac.destination);
     window.out = ac.createGain();
     window.out.connect(dcn);
-
+    var _timeOneTick = 1.2; // speed 
+    var _timeStart = 0;
     window.wave = waves['guitar'];
-    for (var i = 0; i < window.soloData.length; i++) {
-        addNote(window.soloData[i], i*0.3, 0.25, i*0.3, i);
-    }  
+    for (var i = 0; i < window.tabeditor.data.length; i++) {
+        var n = window.tabeditor.data[i];
+        _timeStart = toTime(n.time, _timeOneTick);
+        var _duration = toTime(n.duration, _timeOneTick) - 0.05;
+        var idx = i;
+        addNote(window.tabeditor.data[i], _timeStart, _duration, _timeStart, idx);
+    }
 }
 
-window.guitarTunings = ["E4", "B3", "G3", "D3", "A2", "E2"]
+// window.guitarTunings = ["E4", "B3", "G3", "D3", "A2", "E2"]
 
 function generate() {
     stop();
@@ -280,18 +289,15 @@ function generate() {
         method: "GET",
         data: filters
     }).done(function(resp){
+        console.log(JSON.stringify(resp));
         $('#tabulatur').html(resp['tabulatur']);
-        window.soloData = resp["part"];
         tabeditor.updateData(resp["part"]);
         console.log(tabeditor.sirealizeToString());
-        window.tabeditor.render();
-        renderTabulatur("_tabulatur", window.guitarTunings)
-        console.log(window.soloData)
+        tabeditor.render();
     }).fail(function(err){
         console.error(err)
-        window.soloData = [];
-        window.tabeditor.render();
-        renderTabulatur("_tabulatur", window.guitarTunings)
+        tabeditor.data = [];
+        tabeditor.render();
         $('#tabulatur').html(err.statusText);
     })
 }
@@ -424,6 +430,145 @@ function initFilters(callback) {
 $(document).ready(function() {
     window.tabeditor = new TabulaturEditor('_tabulatur')
     initFilters(function() {
-        generate();
+        // generate();
+        testPart();
     })
 })
+
+function testPart() {
+    var test_part_resp = {
+        "part":[
+            {
+                "time": "0/32",
+                "duration": "4/32",
+                "finger":"index",
+                "fret":5,
+                "note":"E4",
+                "string":2
+            }, 
+            {
+                "time": "4/32",
+                "duration": "16/32",
+                "finger":"ring",
+                "fret":5,
+                "note":"E4",
+                "string":2
+            },
+            {
+                "time": "20/32",
+                "duration":"4/32",
+                "finger":"index",
+                "fret":5,
+                "note":"C4",
+                "string":3
+            },
+            {
+                "time": "24/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":5,
+                "note":"A4",
+                "string":1
+            },
+            {
+                "time": "32/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":2,
+                "note":"E3",
+                "string":4
+            },
+            {
+                "time": "40/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":3,
+                "note":"F3",
+                "string":4
+            },
+            {
+                "time": "48/32",
+                "duration":"1/4",
+                "finger":"ring",
+                "fret":5,
+                "note":"G3",
+                "string":4
+            },
+            {
+                "time": "56/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":2,
+                "note":"E3",
+                "string":4
+            },
+            {
+                "time": "64/32",
+                "duration":"1/4",
+                "finger":"middle",
+                "fret":3,
+                "note":"F3",
+                "string":4
+            },
+            {
+                "time": "72/32",
+                "duration":"1/4",
+                "finger":"middle",
+                "fret":5,
+                "note":"G3",
+                "string":4
+            },
+            {
+                "time": "80/32",
+                "duration":"1/4",
+                "finger":"middle",
+                "fret":7,
+                "note":"A3",
+                "string":4
+            },
+            {
+                "time": "88/32",
+                "duration":"1/4",
+                "finger":"middle",
+                "fret":5,
+                "note":"G3",
+                "string":4
+            },
+            {
+                "time": "96/32",
+                "duration":"1/4",
+                "finger":"no",
+                "fret":0,
+                "note":"D3",
+                "string":4
+            },
+            {
+                "time": "104/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":6,
+                "note":"F4",
+                "string":2
+            },
+            {
+                "time": "112/32",
+                "duration":"1/4",
+                "finger":"index",
+                "fret":5,
+                "note":"E4",
+                "string":2
+            },
+            {
+                "time": "120/32",
+                "duration":"1/4",
+                "finger":"ring",
+                "fret":7,
+                "note":"A3",
+                "string":4
+            }
+        ],
+        "tabulatur":""
+    };
+    tabeditor.updateData(test_part_resp["part"]);
+    tabeditor.render();
+}
