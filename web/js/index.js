@@ -291,6 +291,7 @@ function generate() {
     }).done(function(resp){
         console.log(JSON.stringify(resp));
         $('#tabulatur').html(resp['tabulatur']);
+        tabeditor.setGuitarTuning(resp["guitarTuning"]);
         tabeditor.updateData(resp["part"]);
         console.log(tabeditor.sirealizeToString());
         tabeditor.render();
@@ -576,6 +577,7 @@ function testPart() {
     var t = btoa(JSON.stringify(test_part_resp));
     console.log(t.length);
 
+    tabeditor.setGuitarTuning(test_part_resp["guitarTuning"]);
     tabeditor.updateData(test_part_resp["part"]);
     tabeditor.render();
 }

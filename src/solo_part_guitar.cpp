@@ -15,14 +15,14 @@ SoloPartGuitar::SoloPartGuitar() {
         }
     }
 
-    m_vGuitarStartStringNotes.push_back("E4"); // 1 string
-    m_vGuitarStartStringNotes.push_back("B3");
-    m_vGuitarStartStringNotes.push_back("G3");
-    m_vGuitarStartStringNotes.push_back("D3");
-    m_vGuitarStartStringNotes.push_back("A2");
-    m_vGuitarStartStringNotes.push_back("E2"); // 6 string
-    m_vGuitarStartStringNotes.push_back("B1"); // 7 string
-    m_vGuitarStartStringNotes.push_back("F#1"); // 8 string
+    m_vGuitarTuning.push_back("E4"); // 1 string
+    m_vGuitarTuning.push_back("B3");
+    m_vGuitarTuning.push_back("G3");
+    m_vGuitarTuning.push_back("D3");
+    m_vGuitarTuning.push_back("A2");
+    m_vGuitarTuning.push_back("E2"); // 6 string
+    // m_vGuitarTuning.push_back("B1"); // 7 string
+    // m_vGuitarTuning.push_back("F#1"); // 8 string
 }
 
 // ---------------------------------------------------------------------
@@ -102,12 +102,18 @@ nlohmann::json SoloPartGuitar::exportToJson() {
 
 // ---------------------------------------------------------------------
 
+std::vector<std::string> SoloPartGuitar::getGuitarTuning() {
+    return m_vGuitarTuning;
+}
+
+// ---------------------------------------------------------------------
+
 std::string SoloPartGuitar::findNoteByPosition(const PositionNoteGuitar &note) {
     int nString = note.getGuitarString();
     if (nString == 0) {
         return "";
     }
-    std::string sPos0 = m_vGuitarStartStringNotes[nString-1];
+    std::string sPos0 = m_vGuitarTuning[nString-1];
     int nPos0 = -1;
     for (int i = 0; i < m_vAllNameOfNotes.size(); i++) {
         if (m_vAllNameOfNotes[i] == sPos0) {

@@ -15,12 +15,13 @@ class SoloPartGuitar {
         std::vector<PositionNoteGuitar> getListOfNotes();
         std::string exportTabulatur();
         nlohmann::json exportToJson();
-
+        std::vector<std::string> getGuitarTuning();
+        
     private:
         std::string TAG;
         std::vector<PositionNoteGuitar> m_vNotes;
         std::vector<std::string> m_vAllNameOfNotes;
-        std::vector<std::string> m_vGuitarStartStringNotes;
+        std::vector<std::string> m_vGuitarTuning;
         std::string findNoteByPosition(const PositionNoteGuitar &note);
         // double getFrequencyOfNote(std::string sNoteName);
 };

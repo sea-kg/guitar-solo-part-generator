@@ -9,6 +9,11 @@ function TabulaturEditor(elementId) {
     self.guitarTunings = ["E4", "B3", "G3", "D3", "A2", "E2"];  // classic
 
     self.frame = 0;
+    
+    self.setGuitarTuning = function(newTuning) {
+        self.guitarTunings = newTuning;
+    }
+
     self.updateData = function(newData) {
         self.data = []
         self.data = newData;
