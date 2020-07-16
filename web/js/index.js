@@ -31,7 +31,7 @@ function changeLocationState(newPageParams) {
 	var url = '';
 	var params = [];
 	// console.log("changeLocationState");
-	console.log("changeLocationState, newPageParams = ", newPageParams);
+	// console.log("changeLocationState, newPageParams = ", newPageParams);
 	for(var p in newPageParams){
 		params.push(encodeURIComponent(p) + "=" + encodeURIComponent(newPageParams[p]));
 	}
@@ -130,7 +130,7 @@ function updateTabulaturNoteEnded(idx) {
 }
 
 function addNote(_note, _time, _duration, _cleanuptime, idx) {
-    console.log(_note)
+    // console.log(_note)
     var note = {};
     note["time"] = _time;
     if (_note.note) {
@@ -216,7 +216,7 @@ function addNote(_note, _time, _duration, _cleanuptime, idx) {
     osc.setPeriodicWave(pwave);
     osc.connect(filter);
     osc.start(startTime);
-    console.log("start ", startTime);
+    // console.log("start ", startTime);
     osc.stop(stopTime);
     osc.onended = function() { 
         // console.log(_note);
@@ -284,8 +284,6 @@ function play() {
     }
 }
 
-// http://localhost:1234/?use_notes=C%7CC%23%7CD%7CD%23%7CG%7CB&use_strings=1%7C2%7C3%7C4&max_fret=11&min_fret=0&part=eyJndWl0YXJUdW5pbmciOlsiRTQiLCJCMyIsIkczIiwiRDMiLCJBMiIsIkUyIl0sInBhcnQiOlt7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibGl0dGxlIiwiZnJldCI6OSwibm90ZSI6IkMjNSIsInN0cmluZyI6MSwidGltZSI6IjAvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibm8iLCJmcmV0IjotMSwibm90ZSI6IiIsInN0cmluZyI6MCwidGltZSI6IjgvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibWlkZGxlIiwiZnJldCI6Nywibm90ZSI6IkQ0Iiwic3RyaW5nIjozLCJ0aW1lIjoiMTYvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoiaW5kZXgiLCJmcmV0Ijo2LCJub3RlIjoiQyM0Iiwic3RyaW5nIjozLCJ0aW1lIjoiMjQvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibm8iLCJmcmV0IjowLCJub3RlIjoiRzMiLCJzdHJpbmciOjMsInRpbWUiOiIzMi8zMiJ9LHsiZHVyYXRpb24iOiIxLzQiLCJmaW5nZXIiOiJpbmRleCIsImZyZXQiOjQsIm5vdGUiOiJCMyIsInN0cmluZyI6MywidGltZSI6IjQwLzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6ImxpdHRsZSIsImZyZXQiOjcsIm5vdGUiOiJENCIsInN0cmluZyI6MywidGltZSI6IjQ4LzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6ImluZGV4IiwiZnJldCI6NCwibm90ZSI6IkIzIiwic3RyaW5nIjozLCJ0aW1lIjoiNTYvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoicmluZyIsImZyZXQiOjYsIm5vdGUiOiJDIzQiLCJzdHJpbmciOjMsInRpbWUiOiI2NC8zMiJ9LHsiZHVyYXRpb24iOiIxLzQiLCJmaW5nZXIiOiJubyIsImZyZXQiOjAsIm5vdGUiOiJHMyIsInN0cmluZyI6MywidGltZSI6IjcyLzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6ImxpdHRsZSIsImZyZXQiOjgsIm5vdGUiOiJEIzQiLCJzdHJpbmciOjMsInRpbWUiOiI4MC8zMiJ9LHsiZHVyYXRpb24iOiIxLzQiLCJmaW5nZXIiOiJubyIsImZyZXQiOjAsIm5vdGUiOiJHMyIsInN0cmluZyI6MywidGltZSI6Ijg4LzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6ImxpdHRsZSIsImZyZXQiOjQsIm5vdGUiOiJCMyIsInN0cmluZyI6MywidGltZSI6Ijk2LzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6Im5vIiwiZnJldCI6MCwibm90ZSI6IkczIiwic3RyaW5nIjozLCJ0aW1lIjoiMTA0LzMyIn0seyJkdXJhdGlvbiI6IjEvNCIsImZpbmdlciI6Im1pZGRsZSIsImZyZXQiOjYsIm5vdGUiOiJDIzQiLCJzdHJpbmciOjMsInRpbWUiOiIxMTIvMzIifSx7ImR1cmF0aW9uIjoiMS80IiwiZmluZ2VyIjoibWlkZGxlIiwiZnJldCI6NSwibm90ZSI6IkM0Iiwic3RyaW5nIjozLCJ0aW1lIjoiMTIwLzMyIn1dLCJ0YWJ1bGF0dXIiOiIxfEU0fC0tLTktLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbjJ8QjN8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuM3xHM3wtLS0tLS0tLS03LS02LS0wLS00LS03LS00LS02LS0wLS04LS0wLS00LS0wLS02LS01XG40fEQzfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS1cbjV8QTJ8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuNnxFMnwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tXG5IQU5EfC0tLUwtLU4tLU0tLUktLU4tLUktLUwtLUktLVItLU4tLUwtLU4tLUwtLU4tLU0tLU1cbk4gLSBObyBmaW5nZXIgLyBlbXB0eSBzdHJpbmdcbkkgLSBJbmRleCBmaW5nZXJcbk0gLSBNaWRkbGUgZmluZ2VyXG5SIC0gUmluZyBmaW5nZXJcbkwgLSBMaXR0bGUgZmluZ2VyXG4ifQ%3D%3D
-
 function generate() {
     stop();
     var filters = {}
@@ -302,8 +300,9 @@ function generate() {
         method: "GET",
         data: filters
     }).done(function(resp){
-        console.log(JSON.stringify(resp));
-        $('#tabulatur').html(resp['tabulatur']);
+        // document.getElementById("tabulatur")
+        // console.log(JSON.stringify(resp));
+        // $('#tabulatur').html(resp['tabulatur']);
         tabeditor.setGuitarTuning(resp["guitarTuning"]);
         tabeditor.updateData(resp["part"]);
         tabeditor.render();
@@ -389,7 +388,7 @@ function appendFilterCheckboxList(_filter) {
             }
         }
     }
-    console.log(checked_vals)
+    // console.log(checked_vals)
 
     var _content = ''
         + '<div class="gspg-filter-row">'
