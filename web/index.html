@@ -28,17 +28,9 @@
       <div class="gspg-tabulatur-title">Tabulatur</div>
       <div class="gspg-tabulatur-content">
         <pre id="tabulatur" style="display: none"></pre>
-
-        <div class="select-instrument">
-          Instrument for play: 
-          <select id="use_instrument">
-            <option value='guitar'>guitar</option>
-            <option value='piano'>piano</option>
-            <option value='bass'>bass</option>
-            <option value='trombone'>trombone</option>
-          </select>
-          <button type="button" onclick="play()" class="gspg-button">Play</button>
-          <button type="button" onclick="stop()" class="gspg-button">Stop</button>
+        <div class="gspg-player">
+          <div onclick="play()" id="gspg_player_play" class="gspg-btn-play"></div>
+          <div onclick="stop()" id="gspg_player_stop" class="gspg-btn-stop" style="display: none;"></div>
         </div>
         <canvas class="gspg-tabulatur-image" id="_tabulatur" height="250px" width="850px"></canvas>
       </div>

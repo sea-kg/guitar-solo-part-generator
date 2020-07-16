@@ -236,10 +236,14 @@ function stop() {
     }
     nodes = []
     window.ac.close();
+    document.getElementById('gspg_player_play').style.display = '';
+    document.getElementById('gspg_player_stop').style.display = 'none';
 }
 
 function play() {
     stop();
+    document.getElementById('gspg_player_play').style.display = 'none';
+    document.getElementById('gspg_player_stop').style.display = '';
 
     updateTabulaturNoteEnded(-1);
 
@@ -252,8 +256,7 @@ function play() {
     window.out = ac.createGain();
     window.out.connect(dcn);
 
-    var intrument = $('#use_instrument').val();
-    window.wave = waves[intrument];
+    window.wave = waves['guitar'];
     for (var i = 0; i < window.soloData.length; i++) {
         addNote(window.soloData[i], i*0.3, 0.25, i*0.3, i);
     }  

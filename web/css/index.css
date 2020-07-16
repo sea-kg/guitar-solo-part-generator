@@ -37,7 +37,7 @@
 }
 
 .gspg-button {
-    background-color: #f44336;
+    background-color: #ad0000;
     color: white;
     border-width: 1px;
     border-style: solid;
@@ -71,7 +71,7 @@
     display: table-cell;
     height: 100px;
     width: 100px;
-    background-image: url("../img/logo.png");
+    background-image: url("../img/gspg-logo.png");
     background-size: 100px 100px;
     min-width: 100px;
     max-width: 100px;
@@ -121,7 +121,34 @@
     padding: 10px;
 }
 
-.select-instrument {
-    display: inline-block;
+.gspg-player {
+    display: block;
+    border: 2px solid #dff9df;
+    padding: 10px;
 }
 
+.gspg-btn-play {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-image: url("../img/gspg-play.png");
+    background-size: 50px 50px;
+    cursor: pointer;
+}
+
+.gspg-btn-play:hover {
+    transform: scale(1.1);
+}
+
+.gspg-btn-stop {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-image: url("../img/gspg-stop.png");
+    background-size: 50px 50px;
+    cursor: pointer;
+}
+
+.gspg-btn-stop:hover {
+    transform: scale(1.1);
+}
