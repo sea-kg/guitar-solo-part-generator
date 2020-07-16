@@ -337,13 +337,16 @@ function appendFilterSelectList(_filter) {
 
 function changedValueOfCheckboxList(e) {
     var filter_name = e.getAttribute('filter-name')
-    
-    if (e.classList.contains("checked")) {
-        e.classList.remove("checked");
-    } else {
+    var newValue = !e.classList.contains("checked");
+    if (newValue) {
         e.classList.add("checked");
+        e.getElementsByClassName('gspg-checkbox-check')[0].classList.add("checked");
+    } else {
+        e.classList.remove("checked");
+        e.getElementsByClassName('gspg-checkbox-check')[0].classList.remove("checked");
     }
-    var fields = document.getElementsByClassName('checkbox-container');
+
+    var fields = document.getElementsByClassName('gspg-checkbox-container');
     var values = []
     for (var i = 0; i < fields.length; i ++) {
         var field = fields[i]
@@ -386,11 +389,11 @@ function appendFilterCheckboxList(_filter) {
             _checked = ''
         }
         _content += ''
-            + '<div class="checkbox-container ' + _checked + '" '
+            + '<div class="gspg-checkbox-container ' + _checked + '" '
             + ' filter-name="' + name + '" '
             + ' filter-value="' + _value + '" '
             + ' onclick="changedValueOfCheckboxList(this)"'
-            + '>' + _caption + '</div>';
+            + '><div class="gspg-checkbox-check ' + _checked + '"></div><div class="gspg-checkbox-caption">' + _caption + '</div></div>';
     }
     _content += '</div>';
     document.getElementById('filters').innerHTML += _content;
@@ -437,19 +440,20 @@ $(document).ready(function() {
 
 function testPart() {
     var test_part_resp = {
+        "guitarTuning": ["E4", "B3", "G3", "D3", "A2", "E2"], // classic
         "part":[
             {
                 "time": "0/32",
                 "duration": "4/32",
                 "finger":"index",
                 "fret":5,
-                "note":"E4",
+                "note":"E4", // can be calculated on play use a guitar tuning
                 "string":2
             }, 
             {
                 "time": "4/32",
                 "duration": "16/32",
-                "finger":"ring",
+                "finger":"index",
                 "fret":5,
                 "note":"E4",
                 "string":2
@@ -457,7 +461,7 @@ function testPart() {
             {
                 "time": "20/32",
                 "duration":"4/32",
-                "finger":"index",
+                "finger":"middle",
                 "fret":5,
                 "note":"C4",
                 "string":3
@@ -465,14 +469,14 @@ function testPart() {
             {
                 "time": "24/32",
                 "duration":"1/4",
-                "finger":"index",
+                "finger":"ring",
                 "fret":5,
                 "note":"A4",
                 "string":1
             },
             {
                 "time": "32/32",
-                "duration":"1/4",
+                "duration":"8/32",
                 "finger":"index",
                 "fret":2,
                 "note":"E3",
@@ -569,6 +573,9 @@ function testPart() {
         ],
         "tabulatur":""
     };
+    var t = btoa(JSON.stringify(test_part_resp));
+    console.log(t.length);
+
     tabeditor.updateData(test_part_resp["part"]);
     tabeditor.render();
 }
