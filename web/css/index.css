@@ -31,6 +31,11 @@
     background-color: #b1b6F3;
 }
 
+.gspg-container {
+    margin: auto;
+    max-width: 890px;
+}
+
 .gspg-button {
     background-color: #f44336;
     color: white;
@@ -119,3 +124,4 @@
 .select-instrument {
     display: inline-block;
 }
+
