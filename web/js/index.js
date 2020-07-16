@@ -445,7 +445,7 @@ function testPart() {
         "part":[
             {
                 "time": "0/32",
-                "duration": "4/32",
+                "duration": "1/8",
                 "finger":"index",
                 "fret":5,
                 "note":"E4", // can be calculated on play use a guitar tuning
@@ -453,7 +453,7 @@ function testPart() {
             }, 
             {
                 "time": "4/32",
-                "duration": "16/32",
+                "duration": "3/4",
                 "finger":"index",
                 "fret":5,
                 "note":"E4",
@@ -461,7 +461,7 @@ function testPart() {
             },
             {
                 "time": "20/32",
-                "duration":"4/32",
+                "duration":"1/8",
                 "finger":"middle",
                 "fret":5,
                 "note":"C4",

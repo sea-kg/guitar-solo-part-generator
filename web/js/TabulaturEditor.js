@@ -7,6 +7,13 @@ function TabulaturEditor(elementId) {
     self.data = [];
     self.countOfStirngs = 6;
     self.guitarTunings = ["E4", "B3", "G3", "D3", "A2", "E2"];  // classic
+    self.notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'],
+    self.allNotes = [];
+    for (var okt = 0; okt < 10; okt++) {
+        for (var n in self.notes) {
+            self.allNotes.push(self.notes[n] + okt);
+        }
+    }
 
     self.frame = 0;
     
@@ -17,7 +24,18 @@ function TabulaturEditor(elementId) {
     self.updateData = function(newData) {
         self.data = []
         self.data = newData;
+        // recalculate notes by string, fret and guitar tuning
+        for (var i in self.data) {
+            var s = self.data[i]["string"]-1;
+            var startNote = self.guitarTunings[s];
+            var fret = self.data[i]["fret"];
+            if (fret >= 0) {
+                var ind = self.allNotes.indexOf(startNote) + self.data[i]["fret"];
+                self.data[i]["note"] = self.allNotes[ind];
+            }
+        }
     }
+
     self.sirealizeToString = function() {
         var s = "[[" + self.guitarTunings.join(",") + "]";
         for (var i = 0; i < self.data.length; i++) {
@@ -26,6 +44,83 @@ function TabulaturEditor(elementId) {
         }
         s += "]";
         return s;
+    }
+    
+    self.normalizeDurationNote = function(durationText) {
+        var r = durationText.split("/");
+        var r0 = parseInt(r[0],10);
+        var r1 = parseInt(r[1],10);
+        while (r0 % 2 == 0 && r1 % 2 == 0) {
+            r0 = r0 / 2;
+            r1 = r1 / 2;
+        }
+        return r0 + "/" + r1;
+    }
+
+    self.renderDurationNote = function(ctx, x, y, dy, durationText) {
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, y)
+        ctx.lineTo(x, y + dy);
+        ctx.stroke();
+        var edX = 5;
+        durationText = self.normalizeDurationNote(durationText);
+
+        switch (durationText) {
+            case "1/2":
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.ellipse(x - edX, y + dy, 4, 6, Math.PI / 3, 0, 2 * Math.PI, false);
+                ctx.stroke();
+                break;
+            case "3/4":
+                // 1/2 
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.ellipse(x - edX, y + dy, 4, 6, Math.PI / 3, 0, 2 * Math.PI, false);
+                ctx.stroke();
+                // + 1/4 
+                ctx.beginPath();
+                ctx.ellipse(x + edX + 2, y + dy, 2, 2, Math.PI / 3, 0, 2 * Math.PI, false);
+                ctx.fill();
+                break;
+            case "1/4":
+                // 
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.ellipse(x - edX, y + dy, 4, 6, Math.PI / 3, 0, 2 * Math.PI, false);
+                ctx.fill();
+
+                // 
+                ctx.beginPath();
+                ctx.moveTo(x, y)
+                ctx.lineTo(x + 10, y);
+                ctx.stroke();
+                break;
+            case "1/8":
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.ellipse(x - edX, y + dy, 4, 6, Math.PI / 3, 0, 2 * Math.PI, false);
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.moveTo(x, y)
+                ctx.lineTo(x + 10, y);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(x, y + 5)
+                ctx.lineTo(x + 10, y + 5);
+                ctx.stroke();
+
+                break;
+        }
+    }
+
+    
+    self.renderNoteName = function(ctx, x, y, noteText) {
+        var mTxt2 = ctx.measureText(noteText);
+        ctx.fillText(noteText, x - mTxt2.width / 2, y);
     }
 
     self.render = function(selectedNote) {
@@ -75,7 +170,7 @@ function TabulaturEditor(elementId) {
                 ctx.fillText(taktLabel, x + 10, paddingTop - 5);
             }
         }
-    
+
         for (var i = 0; i < countTakts; i++) {
             var x = paddingLeft + i*taktWidth;
             for (var n = 0; n < countStrings; n++) {
@@ -102,6 +197,9 @@ function TabulaturEditor(elementId) {
             var note = self.data[i];
             var fret = note["fret"]
             var txt = "" + fret;
+            if (fret < 0) {
+                txt = "";
+            }
             var mTxt = ctx.measureText(txt);
             var nStr = note["string"]
             
@@ -125,11 +223,16 @@ function TabulaturEditor(elementId) {
     
             var txt_y = y + fontSize / 3;
             ctx.fillText(txt, x - mTxt.width / 2, txt_y);
-    
-            ctx.beginPath();
-            ctx.moveTo(x, paddingTop + taktHeight + heightBetweenStrings)
-            ctx.lineTo(x, paddingTop + taktHeight + heightBetweenStrings*3)
-            ctx.stroke();
+
+            var durY = paddingTop + taktHeight + heightBetweenStrings;
+            self.renderDurationNote(ctx, 
+                x, 
+                durY,
+                40, 
+                note["duration"]
+            );
+            durY += 60;
+            self.renderNoteName(ctx, x, durY, note["note"]);
     
             var finger = note["finger"];
             finger = shortFingers[finger];
