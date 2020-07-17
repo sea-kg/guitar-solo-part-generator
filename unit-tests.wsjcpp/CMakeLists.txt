@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(unit-tests C CXX)
-add_definitions(-DWSJCPP_APP_VERSION="ut-v0.1.1")
+add_definitions(-DWSJCPP_APP_VERSION="ut-v0.1.2")
 add_definitions(-DWSJCPP_APP_NAME="unit-tests-guitar-solo-part-generator")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -53,7 +53,7 @@ list (APPEND WSJCPP_SOURCES "../src.wsjcpp/wsjcpp_light_web_server/wsjcpp_light_
 list (APPEND WSJCPP_INCLUDE_DIRS "../src.wsjcpp/nlohmann_json/")
 list (APPEND WSJCPP_SOURCES "../src.wsjcpp/nlohmann_json/json.hpp")
 
-# guitar-solo-part-generator:v0.1.1
+# guitar-solo-part-generator:v0.1.2
 list (APPEND WSJCPP_INCLUDE_DIRS "../src")
 list (APPEND WSJCPP_SOURCES "../src/position_note_guitar.h")
 list (APPEND WSJCPP_SOURCES "../src/position_note_guitar.cpp")
