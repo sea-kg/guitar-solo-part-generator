@@ -1,4 +1,7 @@
 # guitar-solo-part-generator
+
+[![Docker Pulls](https://img.shields.io/docker/pulls/sea5kg/guitar-solo-part-generator.svg)](https://hub.docker.com/r/sea5kg/guitar-solo-part-generator/) [![Github Stars](https://img.shields.io/github/stars/sea-kg/guitar-solo-part-generator.svg?label=github%20%E2%98%85)](https://github.com/sea-kg/guitar-solo-part-generator) [![Github Stars](https://img.shields.io/github/contributors/sea-kg/guitar-solo-part-generator.svg)](https://github.com/sea-kg/guitar-solo-part-generator) [![Github Forks](https://img.shields.io/github/forks/sea-kg/guitar-solo-part-generator.svg?label=github%20forks)](https://github.com/sea-kg/guitar-solo-part-generator/network/members)
+
 Guitar Solo Part Generator
 
 ## How to run latest from docker
