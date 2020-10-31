@@ -27,15 +27,12 @@
       <div class="gspg-tabulatur-title">Tabulatur</div>
       <div class="gspg-tabulatur-content">
         <div class="gspg-player">
-          <div onclick="play()" id="gspg_player_play" class="gspg-btn-play"></div>
-          <div onclick="stop()" id="gspg_player_stop" class="gspg-btn-stop" style="display: none;"></div>
+          <div onclick="testPart()" class="gspg-button-control example"></div>
+          <div onclick="generate()" class="gspg-button-control generate"></div>
+          <div onclick="play()" id="gspg_player_play" class="gspg-button-control play"></div>
+          <div onclick="stop()" id="gspg_player_stop" class="gspg-button-control stop" style="display: none;"></div>
         </div>
         <canvas class="gspg-tabulatur-image" id="_tabulatur" height="250px" width="850px"></canvas>
-      </div>
-      <div class="gspg-tabulatur-bottom">
-        <button type="button" onclick="generate()" class="gspg-button">Generate New Part</button>
-        <button type="button" onclick="testPart()" class="gspg-button">Test Part</button>
-        <div id="currentnote"></div>
       </div>
     </div>
     <br>

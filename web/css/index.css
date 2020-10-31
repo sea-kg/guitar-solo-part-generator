@@ -105,6 +105,7 @@
     line-height: 75px;
     font-size: 42px;
     padding-left: 25px;
+    white-space: nowrap;
 }
 
 .preambula-links {
@@ -132,41 +133,38 @@
     padding: 20px;
 }
 
-.gspg-tabulatur-bottom {
-    border-top: 2px solid #dff9df;
-    padding: 10px;
-}
-
 .gspg-player {
     display: block;
     border: 2px solid #dff9df;
     padding: 10px;
 }
 
-.gspg-btn-play {
+.gspg-button-control {
     display: inline-block;
     width: 50px;
     height: 50px;
+    background-size: 50px 50px;
+    cursor: pointer;    
+}
+
+.gspg-button-control:hover {
+    transform: scale(1.1);
+}
+
+.gspg-button-control.play {
     background-image: url("../img/gspg-play.png");
-    background-size: 50px 50px;
-    cursor: pointer;
 }
 
-.gspg-btn-play:hover {
-    transform: scale(1.1);
-}
-
-.gspg-btn-stop {
-    display: inline-block;
-    width: 50px;
-    height: 50px;
+.gspg-button-control.stop {
     background-image: url("../img/gspg-stop.png");
-    background-size: 50px 50px;
-    cursor: pointer;
 }
 
-.gspg-btn-stop:hover {
-    transform: scale(1.1);
+.gspg-button-control.example {
+    background-image: url("../img/gspg-example.png");
+}
+
+.gspg-button-control.generate {
+    background-image: url("../img/gspg-generate.png");
 }
 
 .gspg-filter-row {
