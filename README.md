@@ -38,6 +38,27 @@ docker-compose up
 
 Now you can see web on page: `http://localhost:1234/`
 
+## How to build
+
+Ubuntu/Debian requirements:
+
+```
+$ sudo apt install g++ cmake pkg-config
+```
+
+Build:
+```
+./build_simple.sh
+```
+
+Start server:
+
+```
+./guitar-solo-part-generator start-server
+```
+
+Now you can see web on page: `http://localhost:1234/`
+
 ## API:
 
 * GET `http://localhost:1234/api/v1/solo-generate/` - guitar solo part generate, response will be returned json format
