@@ -86,14 +86,16 @@ std::string SoloPartGuitar::exportTabulatur() {
 
 nlohmann::json SoloPartGuitar::exportToJson() {
     nlohmann::json json = nlohmann::json::array();
+    int nTime = 0;
     for (int i = 0; i < m_vNotes.size(); i++) {
         PositionNoteGuitar note = m_vNotes[i];
         nlohmann::json jsonNote;
-        jsonNote["time"] = std::to_string(i * 8) + "/32"; // TODO hardcode
+        jsonNote["time"] = std::to_string(nTime) + "/32";
+        nTime += note.getDuration();
         jsonNote["string"] = note.getGuitarString();
         jsonNote["fret"] = note.getFret();
         jsonNote["finger"] = GuitarSoloPartGeneratorEnums::fingerToValue(note.getFinger());
-        jsonNote["duration"] = "1/4"; // TODO hardcode
+        jsonNote["duration"] = GuitarSoloPartGeneratorEnums::durationToStringValue(note.getDuration());
         jsonNote["note"] = findNoteByPosition(note);
         json.push_back(jsonNote);
     }

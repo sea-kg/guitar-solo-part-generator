@@ -60,10 +60,12 @@ class PositionNoteGuitar {
         PositionNoteGuitar( // empty == silent
             GuitarDurationOfNote nDuration
         );
+        void setDuration(GuitarDurationOfNote nDuration);
+
         GuitarNumberString getGuitarString() const;
         int getFret() const;
         GuitarTouchFinger getFinger();
-        int getDuration();
+        GuitarDurationOfNote getDuration();
         std::string toPrintableString();
 
         bool operator==(const PositionNoteGuitar &rhs) const;

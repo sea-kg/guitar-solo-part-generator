@@ -35,15 +35,15 @@ enum GuitarTouchFinger {
 // ---------------------------------------------------------------------
 
 enum GuitarDurationOfNote {
-    GUITAR_DURATION_OF_NOTE_8_1_MAXIMA = -8, // 8/1
-    GUITAR_DURATION_OF_NOTE_4_1_LONG = -4, // 4/1
-    GUITAR_DURATION_OF_NOTE_2_1_BREVE = -2, // 2/1
-    GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE = 1, // 1/1
-    GUITAR_DURATION_OF_NOTE_1_2_MINIM = 2,  // 1/2
-    GUITAR_DURATION_OF_NOTE_1_4_CROTCHET = 4, // 1/4
-    GUITAR_DURATION_OF_NOTE_1_8_QUAVER = 8, // 1/8
-    GUITAR_DURATION_OF_NOTE_1_16_SEMIQUARVER = 16, // 1/16
-    GUITAR_DURATION_OF_NOTE_1_32_DEMISEMIQUARVER = 32 // 1/32
+    GUITAR_DURATION_OF_NOTE_8_1_MAXIMA = 256, // 8/1
+    GUITAR_DURATION_OF_NOTE_4_1_LONG = 128, // 4/1
+    GUITAR_DURATION_OF_NOTE_2_1_BREVE = 64, // 2/1
+    GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE = 32, // 1/1
+    GUITAR_DURATION_OF_NOTE_1_2_MINIM = 16,  // 1/2
+    GUITAR_DURATION_OF_NOTE_1_4_CROTCHET = 8, // 1/4
+    GUITAR_DURATION_OF_NOTE_1_8_QUAVER = 4, // 1/8
+    GUITAR_DURATION_OF_NOTE_1_16_SEMIQUARVER = 2, // 1/16
+    GUITAR_DURATION_OF_NOTE_1_32_DEMISEMIQUARVER = 1 // 1/32
     // GUITAR_DURATION_OF_NOTE_hemidemisemiquaver = 64 // 1/64
     // GUITAR_DURATION_OF_NOTE_semihemidemisemiquaver / rare = 128 // 1/128
     // GUITAR_DURATION_OF_NOTE_demisemihemidemisemiquaver = 256 // 1/256
@@ -55,6 +55,7 @@ class GuitarSoloPartGeneratorEnums {
     public:
         static GuitarTouchFinger valueToFinger(const std::string &sValue);
         static std::string fingerToValue(GuitarTouchFinger nFinger);
+        static std::string durationToStringValue(GuitarDurationOfNote nDuration);
 };
 
 #endif // GUITAR_SOLO_PART_GENERATOR_ENUMS_H

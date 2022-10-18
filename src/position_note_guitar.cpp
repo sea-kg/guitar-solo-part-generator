@@ -124,8 +124,6 @@ PositionNoteGuitar::PositionNoteGuitar() {
     checkAndThrow();
 }
 
-// ---------------------------------------------------------------------
-
 PositionNoteGuitar::PositionNoteGuitar(
     GuitarNumberString nGuitarString, 
     int nFret, 
@@ -140,8 +138,6 @@ PositionNoteGuitar::PositionNoteGuitar(
     checkAndThrow();
 }
 
-// ---------------------------------------------------------------------
-
 PositionNoteGuitar::PositionNoteGuitar( // empty == silent
     GuitarDurationOfNote nDuration
 ) {
@@ -152,31 +148,25 @@ PositionNoteGuitar::PositionNoteGuitar( // empty == silent
     checkAndThrow();
 }
 
-// ---------------------------------------------------------------------
+void PositionNoteGuitar::setDuration(GuitarDurationOfNote nDuration) {
+    m_nDuration = nDuration;
+}
 
 GuitarNumberString PositionNoteGuitar::getGuitarString() const {
     return m_nGuitarString;
 }
 
-// ---------------------------------------------------------------------
-
 int PositionNoteGuitar::getFret() const {
     return m_nFret;
 }
-
-// ---------------------------------------------------------------------
 
 GuitarTouchFinger PositionNoteGuitar::getFinger() {
     return m_nFinger;
 }
 
-// ---------------------------------------------------------------------
-
-int PositionNoteGuitar::getDuration() {
+GuitarDurationOfNote PositionNoteGuitar::getDuration() {
     return m_nDuration;
 }
-
-// ---------------------------------------------------------------------
 
 bool PositionNoteGuitar::operator==(const  PositionNoteGuitar &rhs) const {
     return 
@@ -187,8 +177,6 @@ bool PositionNoteGuitar::operator==(const  PositionNoteGuitar &rhs) const {
     ;
 }
 
-// ---------------------------------------------------------------------
-
 bool PositionNoteGuitar::operator!=(const PositionNoteGuitar &rhs) const {
     return 
         m_nGuitarString != rhs.m_nGuitarString 
@@ -197,8 +185,6 @@ bool PositionNoteGuitar::operator!=(const PositionNoteGuitar &rhs) const {
         || m_nDuration != rhs.m_nDuration
     ;
 }
-
-// ---------------------------------------------------------------------
 
 std::string PositionNoteGuitar::toPrintableString() {
     std::string sRet = 
@@ -210,8 +196,6 @@ std::string PositionNoteGuitar::toPrintableString() {
 
     return sRet;
 }
-
-// ---------------------------------------------------------------------
 
 void PositionNoteGuitar::checkAndThrow() {
     if (m_nGuitarString < 0 || m_nGuitarString > 8) {

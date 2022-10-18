@@ -41,3 +41,28 @@ std::string GuitarSoloPartGeneratorEnums::fingerToValue(GuitarTouchFinger nFinge
     WsjcppLog::warn(TAG, "Unknown type of finger '" + std::to_string((int)nFinger) + "' will be return 'no'");
     return "no";
 }
+
+std::string GuitarSoloPartGeneratorEnums::durationToStringValue(GuitarDurationOfNote nDuration) {
+    const std::string TAG = "GuitarSoloPartGeneratorEnums::durationToStringValue";
+    if (nDuration == GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_8_1_MAXIMA) {
+        return "8/1";
+    } else if (nDuration == GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_4_1_LONG) {
+        return "4/1";
+    } else if (nDuration == GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_2_1_BREVE) {
+        return "2/1";
+    } else if (nDuration == GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE) {
+        return "1/1";
+    } else if (nDuration == GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_2_MINIM) {
+        return "1/2";
+    } else if (nDuration == GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET) {
+        return "1/4";
+    } else if (nDuration == GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_8_QUAVER) {
+        return "1/8";
+    } else if (nDuration == GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_16_SEMIQUARVER) {
+        return "1/16";
+    } else if (nDuration == GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_32_DEMISEMIQUARVER) {
+        return "1/32";
+    }
+    WsjcppLog::warn(TAG, "Unknown type of duration '" + std::to_string((int)nDuration) + "' will be return ''");
+    return "";
+}

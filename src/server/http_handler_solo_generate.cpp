@@ -54,8 +54,31 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WsjcppLightWe
     );
 
     WsjcppLog::info(TAG, "start note: " + note.toPrintableString());
+    
+    std::vector<GuitarDurationOfNote> vPossibleDurations;
+    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE);
+    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_2_MINIM);
+    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET);
+    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_8_QUAVER);
+    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_16_SEMIQUARVER);
+    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_32_DEMISEMIQUARVER);
+
+    std::vector<GuitarDurationOfNote> vRhythmTable;
+    int nMaxDurationPart = 16 * GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET; // 3 tacks
+    int nCurrentDuration = 0;
+    while (nCurrentDuration < nMaxDurationPart) {
+        GuitarDurationOfNote nDur = vPossibleDurations[std::rand() % vPossibleDurations.size()];
+        if ((nDur + nCurrentDuration) <= nMaxDurationPart) {
+            vRhythmTable.push_back(nDur);
+            WsjcppLog::info(TAG, "Duration: " + GuitarSoloPartGeneratorEnums::durationToStringValue(nDur));
+            nCurrentDuration += nDur;
+        }
+    }
+    
+    WsjcppLog::info(TAG, "vRhythmTable.size(): " + std::to_string(vRhythmTable.size()));
+
     SoloPartGuitar part;
-    for (int i = 0; i < 16; i++) {
+    for (int i = 0; i < vRhythmTable.size(); i++) {
         std::vector<PositionNoteGuitar> vNotes = m_pMovementRules->findWithBegin(note);
 
         for (int f = 0; f < m_vFilters.size(); f++) {
@@ -78,6 +101,8 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WsjcppLightWe
             // resp.badRequest().noCache().sendText("Could not generate with this params");
         } else {
             note = vNotes[std::rand() % vNotes.size()];
+            note.setDuration(vRhythmTable[i]);
+            // note
             part.addNote(note);
             WsjcppLog::info(TAG, "note[" + std::to_string(i) + "] = " + note.toPrintableString());
         }
