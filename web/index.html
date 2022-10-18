@@ -7,6 +7,7 @@
     <script src="./js/TabulaturEditor.js"></script>
     <script src="./js/createWaves.js"></script>
     <script src="./js/index.js"></script>
+    <script src="./js/jsmidgen.js"></script>
 </head>
 <body class="gspg-container">
     <div class="preambula">
@@ -31,6 +32,8 @@
           <div onclick="generate()" class="gspg-button-control generate"></div>
           <div onclick="play()" id="gspg_player_play" class="gspg-button-control play"></div>
           <div onclick="stop()" id="gspg_player_stop" class="gspg-button-control stop" style="display: none;"></div>
+          <div onclick="download_midi()" class="gspg-button-control download-midi"></div>
+          
         </div>
         <canvas class="gspg-tabulatur-image" id="_tabulatur" height="250px" width="850px"></canvas>
       </div>

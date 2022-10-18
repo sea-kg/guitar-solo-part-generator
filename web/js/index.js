@@ -126,6 +126,10 @@ function updateTabulaturNoteEnded(idx) {
     if (idx + 1 >= window.tabeditor.data.length) {
         document.getElementById('gspg_player_play').style.display = '';
         document.getElementById('gspg_player_stop').style.display = 'none';
+        // repeat
+        setTimeout(function() {
+            play()
+        }, 1);
     }
 }
 
@@ -610,3 +614,31 @@ document.addEventListener('DOMContentLoaded', function(){
         }
     })
 });
+
+function download_midi() {
+    var midi_file = new Midi.File();
+    var track = new Midi.Track();
+    midi_file.addTrack(track);
+
+    for (var i = 0; i < window.tabeditor.data.length; i++) {
+        var n = window.tabeditor.data[i];
+        console.log(n.duration)
+        track.addNote(0, n.note, toTime(n.duration, 256));
+    }
+
+    const binaryString = midi_file.toBytes()
+    const bl = binaryString.length
+    const buffer = new ArrayBuffer(bl);
+    let chars = new Uint8Array(buffer);
+    for(let i=0; i<bl; i++)  chars[i] = binaryString.charCodeAt(i)
+
+    // here I've got the input file as a .exe file.
+    const file = new File([buffer], 'solo.mid', { type: "audio/x-midi" });
+    const url = URL.createObjectURL(file)
+
+    const a = document.createElement('a')
+    a.href = url;
+    a.download = file.name;
+    a.click()
+    URL.revokeObjectURL(url)
+}

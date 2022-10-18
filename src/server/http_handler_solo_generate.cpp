@@ -59,22 +59,27 @@ bool HttpHandlerSoloGenerate::handle(const std::string &sWorkerId, WsjcppLightWe
     vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE);
     vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_2_MINIM);
     vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET);
+    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET);
+    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET);
+    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET);
     vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_8_QUAVER);
-    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_16_SEMIQUARVER);
-    vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_32_DEMISEMIQUARVER);
+    // vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_16_SEMIQUARVER);
+    // vPossibleDurations.push_back(GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_32_DEMISEMIQUARVER);
 
     std::vector<GuitarDurationOfNote> vRhythmTable;
-    int nMaxDurationPart = 16 * GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_4_CROTCHET; // 3 tacks
-    int nCurrentDuration = 0;
-    while (nCurrentDuration < nMaxDurationPart) {
-        GuitarDurationOfNote nDur = vPossibleDurations[std::rand() % vPossibleDurations.size()];
-        if ((nDur + nCurrentDuration) <= nMaxDurationPart) {
-            vRhythmTable.push_back(nDur);
-            WsjcppLog::info(TAG, "Duration: " + GuitarSoloPartGeneratorEnums::durationToStringValue(nDur));
-            nCurrentDuration += nDur;
+
+    int nMaxDurationTact = GuitarDurationOfNote::GUITAR_DURATION_OF_NOTE_1_1_SEMIBREVE;
+    for (int i = 0; i < 4; i++) { // 4 tacks
+        int nCurrentDuration = 0;
+        while (nCurrentDuration < nMaxDurationTact) {
+            GuitarDurationOfNote nDur = vPossibleDurations[std::rand() % vPossibleDurations.size()];
+            if ((nDur + nCurrentDuration) <= nMaxDurationTact) {
+                vRhythmTable.push_back(nDur);
+                WsjcppLog::info(TAG, "Duration: " + GuitarSoloPartGeneratorEnums::durationToStringValue(nDur));
+                nCurrentDuration += nDur;
+            }
         }
     }
-    
     WsjcppLog::info(TAG, "vRhythmTable.size(): " + std::to_string(vRhythmTable.size()));
 
     SoloPartGuitar part;

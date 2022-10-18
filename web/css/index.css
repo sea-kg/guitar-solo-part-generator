@@ -167,6 +167,10 @@
     background-image: url("../img/gspg-generate.png");
 }
 
+.gspg-button-control.download-midi {
+    background-image: url("../img/gspg-download-midi.png");
+}
+
 .gspg-filter-row {
     border: 2px solid #dff9df;
     padding: 10px;

@@ -63,4 +63,6 @@ Now you can see web on page: `http://localhost:1234/`
 
 * GET `http://localhost:1234/api/v1/solo-generate/` - guitar solo part generate, response will be returned json format
 
+## 3rdparty
 
+- https://github.com/dingram/jsmidgen - for generate midi file
